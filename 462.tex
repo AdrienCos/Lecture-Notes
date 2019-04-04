@@ -429,12 +429,38 @@
         \item X2 interface between eNBs uses non-UE specific keys
     \end{itemize}
     
-    \textbf{EPS acronyms}\\
+    \textbf{EPS Misc.}\\
     UE: ME + UICC\\
     ME: Device without UICC\\
     UICC: smartcard on which applications reside\\
     USIM: Application on the UICCm it holds security parameters in the AKA\\
-    SIM: Older terminology
+    SIM: Older terminology\\
+    The comms between UICC and NW operator backend can be proprietary \\
+    3GPP provides guidelines and recommandations (eg MILENAGE, mechanisms for sequence number managers)
+    
+    \textbf{EPS Security Features}\\
+    Confidentiality of user and device identifiers:
+    \begin{itemize}
+        \item IMSI (International Mobile Subscriber ID) is stored in the UICC
+        \item IMEI (International Mobile Equipemnt ID) is stored in the ME
+    \end{itemize}
+    Authentication between the UE and the NW:
+    \begin{itemize}
+        \item NW authenticates user
+        \item User authenticates NW\\
+        $\implies$ mutual authentication
+        \item Terminal and NW agree on a shared secret key
+    \end{itemize}
+    Confidentialy of user and signalling data:
+    \begin{itemize}
+        \item Encrypt digital comms to protect from eavesdropping
+    \end{itemize}
+    Integrity of signalling data:
+    \begin{itemize}
+        \item Verify the integrity of every control message
+        \item No integrity protection of user data (except in the case of relays)
+    \end{itemize}
+    
 
     
     
