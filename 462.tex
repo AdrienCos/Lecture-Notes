@@ -410,7 +410,14 @@
             \item MME initiates authentication and key (AKA) agreement with the UE
         \end{itemize}
         \item The MME and UE now share a secret key $K_{ASME}$ (ASME: access security management entity)
+        \begin{itemize}
+            \item 2 sub-keys are derived for NAS: confidentiality and integrity
+            \item A third key is provided to the eNB by the MME
+            \item 3 additional keys are derived in the UE for Access Stratum (AS): signalling confidentiality/integrity and User Plane (UP) confidentiality
+        \end{itemize}
     \end{enumerate}
+    
+    \textbf{EPS Security Architecture}\\
     
 
 \end{minipage}
