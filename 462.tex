@@ -417,7 +417,26 @@
         \end{itemize}
     \end{enumerate}
     
-    \textbf{EPS Security Architecture}\\
+    \textbf{EPS Security Architecture}
+    \begin{itemize}
+        \item IPSec provides:
+        \begin{itemize}
+            \item Authentication Header (AH)
+            \item Encapsulated Secure Payload (ESP)
+        \end{itemize}
+        \item Signalling between UE and MME is managed over S1-MME interface
+        \item User data is transferred by the UE and S-GW over the S1-U interface (via IPSec if protected, using non-UE specific keys)
+        \item X2 interface between eNBs uses non-UE specific keys
+    \end{itemize}
+    
+    \textbf{EPS acronyms}\\
+    UE: ME + UICC\\
+    ME: Device without UICC\\
+    UICC: smartcard on which applications reside\\
+    USIM: Application on the UICCm it holds security parameters in the AKA\\
+    SIM: Older terminology
+
+    
     
 
 \end{minipage}
