@@ -1,0 +1,426 @@
+\documentclass[10pt,letterpaper,landscape]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\usepackage{enumitem}
+\setlist{nosep}
+
+
+\usepackage{graphicx}
+
+\usepackage[left=-0.5cm,right=-0.5cm,top=-0.3cm,bottom=-0.3cm]{geometry}
+
+\usepackage{microtype}
+
+
+\author{Adrien Cosson}
+\title{Fiches de révision}
+
+\newcommand{\boxheight}{21.59cm}
+\newcommand{\boxwidth}{8.85cm}
+
+
+\begin{document}
+\begin{small}
+\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    \textbf{Fourier analysis}\\
+    For a square wave of ampliture $A$: \\
+    $a_n = \left\{\begin{matrix}
+    0 & if\ n\ is\ even\\
+    \frac{2A}{n\pi} & if\ n\ is\ odd
+    \end{matrix}\right.$
+    
+    \textbf{Prevent Intercarrier Interference (ICI) in the same channel}\\
+    Separate carriers by a frequency of $f = \frac{1}{T}$ where $T$ is the symbol period.
+    
+    \textbf{Cyclic prefix}\\
+    Copy a fraction of the end of a symbol at its start before sending it. This extends the symbol period, but helps prevent multipath overlap, reduce the channel width requirements and help overcome ICI.
+    
+    \textbf{Maximum data rate in Comm Channel}\\
+    Even a perfect channel has a finite capacity (Nyquist 1924). Same thing for channel with random noise (SHannon 1948).
+    
+    \textbf{Nyquist theorem}\\
+    $max_{datarate} = 2B \log_2(V)$ (in bits per sec) \\
+    where $V$ is the number of discrete levels and $B$ is the bandwidth
+    
+    \textbf{Shannon's Channel Capacity}\\
+    $C = B\log_2(1 + SNR)$ \\
+    where $SNR$ is the linear signal-to-noise ratio
+    
+    \textbf{Signal types} \\
+    Baseband signal: information signal to be transmitted\\
+    Modulation: conversion of a baseband signal to a signal that may be transmitted \\
+    Carrier: sinusoidal signal of higher frequency than the baseband signal, whose freq/amplitude/phase is varied in proportion to the information signal
+    
+    \textbf{Convolution}\\
+    $f(t)*g(t) = \int_{-\infty}^{\infty}f(t)g(t-\alpha)d\alpha$
+    
+    \textbf{Signal space diagrams}\\
+    We represent symbols as vectors in a vector space. We pick a set of basis functions $\{\phi_n\}$ of size $N$. This set is complete if it is a basis of the symbols vector space.\\
+    Given a complete set, any signal $S_m(t)$ can be represented as a linear combination of the $\phi_n$: \\
+    $S_m(t) = \sum_n S_{m,n} \phi_n(t)$ \\
+    $S_{m,n} = \int_0^{T_s} S_m(t) \phi_n^*(t) dt$\\
+    These vectors can then be plotted in a signal space diagram
+    
+    \textbf{Binary Phase Shift Keying (BPSK)}\\
+    2 levels, encoded in the phase of the carrier
+    
+    \textbf{QPSK}\\
+    Four possible phase values, giving 2 bits per symbol
+    
+    \textbf{Quadrature Amplitude Modulation (QAM)}\\
+    Code the data on both amplitude and phase of the signal
+    
+    \textbf{Orthogonal Frequency Division Modulation (OFDM)}\\
+    Why? Perfect square pulse is deformed by the channel and spread out at the receiver. To mitigate that, add a delay between pulses to prevent overlap at receiver. Other possibility: increase the length of the symbol to reduce the spread.
+    
+    Other issue of wireless channels is multipath that causes duplicates of a signal to be received at different times and intensities.
+    
+     
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    \textbf{OFDM idea}
+    \begin{itemize}
+        \item Take N pairs of bits
+        \item Encode each in QPSK
+        \item Treat each as a Fourier coefficient
+        \item Do an IFFT on the whole set (consider it as an N points FFT)
+        \item Transmit the created time signal
+    \end{itemize}
+    
+    \textbf{Symmetric Key Signature}\\
+    A sends $K_A(ID_B, nonce, t, P)$ to a central authority (CA). The CA sends $K_B(ID_A, nonce, t, P, K^-_{CA}(ID_A, t, P))$ to B.
+    
+    \textbf{Message Authentication Code (MAC)} \\
+    Sender creates messages, appends the shared key and computes the hash of it. Sender sends message + hash. Receiver calculates hash of message + key to check correctness.
+    
+    \textbf{LTE} \\
+    LTE uses radio frames of 10ms, split into 10 subframes, split again in 2 time slots of 0.5ms. Each slot with a standard CP can carry 7 symbols, an extended CP allows only 6 symbols 
+    
+    \textbf{802.11 architecture}
+    \begin{itemize}
+        \item WLAN: each client is associated to an AP
+        \item AdHoc: no AP, clients associated with each other and can send frames directly to each other 
+    \end{itemize}
+    
+    \textbf{Wi-Fi bands}\\
+    An AP is assigned and SSID and channel number by the administrator
+    \begin{itemize}
+        \item 2.4 GHz (b/g/n) $\rightarrow$ 2.4GHz - 2.483GHz (only channels 1,6 and 11 in the US)\\ Channel $i$ frequency: $f_{ci} = 2412 MHz + (i-1) * 5 MHz$
+        \item 5.4GHz (a/h/j/n/ac/ax) $\rightarrow$ 5.17 - 5.33 (36-64), 5.49 - 5.71 (100-140), 5.735 - 5.834 (149-165)
+    \end{itemize}
+    
+    \textbf{Association Process}\\
+    APs periodically sent beacons advertising their SSID and MAC. Stations (ie clients) scan channels, listening for the beacons. The station selects an AP and sends an association request frame. The AP answers with a response frame. 
+    
+    \textbf{Scanning}
+    \begin{itemize}
+        \item Passive: station scan channels, listening for beacons
+        \item Active: station broadcasts probe frame, and is answered to by all APs 
+    \end{itemize}
+    
+    \textbf{CSMA/CA}\\
+    Station senses the channels before sending, if it senses energy it holds off transmission. When the transmission starts, the whole frame is transmitted. Station that has a frame to send starts with a random back off time (except if it recently sent a frame and the channel is idle)
+    
+    \textbf{Random exponential backoff}\\
+    For try $n$, pick a number in $[0, (2^{4+n}-1)]$ and multiply it by the time slot duration ($9\mu s$ for OFDM, $20 \mu s$ for DSSS). Wait until channel is idle and start counting the slots down (except when the channel is being used). When the counter reaches zero, send the frame and wait for and ACK. When receiving an ACK, the transmitting station knows it has a successful transmission. If the station has another frame to send, it begins the process again. If the ACK is not received, it tries again with a larger exponential backoff.
+    
+    
+
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+
+	\textbf{LTE Synchronisation - Uplink}\\
+	The mobile sends a Demodulation Ref Signal (DRS) along with PUSCH and PUCCH: phase reference for use in channel estimation\\
+	Also sends a Sounding Ref Signal (SRS) as dictated by the base station (to determine the physical channel properties)
+	
+	\textbf{LTE Synchronosation - Downlink} \\
+	Cell-Specific Ref Signal (RS): contains phase and power reference\\
+	User-Equipement RS: signal to help UE using beam-forming\\
+	Primary and Secondary Synch Signal (PSS and SSS)
+	
+	\textbf{Phase synchronization}\\
+	PLL: multiply estimated phase with received signal and filter out the $2\omega t$ component to get a linear function of the phase difference (that you then feed back in the system)
+	
+	\textbf{LTE Synchronization - Donwlink con't}\\
+	PSS and SSS are transmitted twice per frame (in the middle of sub-frames 1 and 5) of 62 out of 72 subcarriers
+	
+	\textbf{Pseudo-noise sequences}\\
+	Used for scrambling (XOR with the data) and spread-spectrum systems. Requirements or random sequence: 
+	\begin{itemize}
+	    \item reproducible at receiver side
+	    \item reproducible in synch w/ the scrambled signal
+	\end{itemize}
+	$\Rightarrow$ use LFSR
+	
+	\textbf{LFSR - Linear Feedback Shift Register}\\
+	Pseudo-noise generator with $n$-stages, periodic, max period of $2^n - 1$ (the $-1$ is because the null sequence is locking). If the period is $2^n - 1$, we have a \textit{max length sequence}, or ``m-sequence'' \\
+	$\Rightarrow$ m-sequence clock w/ a high rate can be used as a Spreading Code
+	
+	\textbf{Spreading Gain}\\
+	$G = 10 \log_{10}\left(\frac{R_w}{R_b}\right)dB$ where $R_w$ is the rate of the LFSR and $R_b$ is the rate of the data signal
+	
+	\textbf{Properties of m-sequences}
+	\begin{enumerate}
+	    \item Balance: the \# of 0 and 1 differs at most by 1
+	    \item Runs: $\frac{1}{2^k}$ of the runs are of length $k$
+	    \item Correlation: comparing a sequence with a shift of itself should give $\#agreements - \#disagreements \equiv -1$
+	\end{enumerate}
+	
+	\textbf{Finite Field}\\
+	Finite set of $q$ elements on which addition and multiplication are defined
+	
+	\textbf{Galois field requirements}\\
+	Finite field $GF(q)$ that satisfies the following properties: 
+	\begin{itemize}
+	    \item The field is closed: any sum/multiplication of elements from the field is in the field
+	    \item There is a unique additive and multiplicative identity
+	    \item Each element has a unique additive and multiplicative inverse
+	    \item All operations in  the field are associative, commutative and distributive
+	\end{itemize}
+	
+	\textbf{Galois Field properties}\\
+	in $GF(q)$, the operations are modulo-$q$ addition and multiplication
+	
+
+
+\end{minipage}
+}
+
+\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+	\textbf{Prime Field}
+	\begin{itemize}
+	    \item $GF(q)$ is a prime field if $q$ is prime
+	    \item If $q$ is prime and $m \in \mathbb{N}$, $GF(q^m)$ is a prime field
+	    \item $p$ is called the \textit{characteristic of the field} if the multiplicative identify multiplied by $p$ gives the additive identity
+	\end{itemize}
+
+    \textbf{Generation of PN sequences with Galois Fields}\\
+    We leverage the fact that the characteristic of $GF(p^m)$ is $p$. $GF(p^m)$ is an \textit{extension} of $GF(p)$
+    
+    \textbf{Generating an extension field for $GF(2^n)$}
+    \begin{enumerate}
+        \item Pick an irreducible primitive poly: \\
+        $f(x) = x^n + a_{n-1}x^{n-1}+ \dots + + a_1 x + 1$, $a_k \in GF(2)$
+        
+        \item Select an abstract symbol $\alpha$ and let it be the root of the polynomial $f$: $f(\alpha) = 0$, so that $\alpha^n = \sum_{i=0}^{n-1}a_{i}\alpha^i$
+        
+        \item The $2^n$ elements of $GF(2^n)$ can be taken as the set of elements that are powers of $\alpha$
+    \end{enumerate}
+    
+    Example: to construct an extension field $GF(2^3) = GF(8)$:
+    \begin{enumerate}
+        \item Select $f(x) = x^3 + x^2 + 1$
+        \item Assume $\alpha$ as the root of $f$: $f(\alpha) = 0 \implies \alpha^3 = \alpha^2 + 1$
+        \item Construct $GF(8)$: \\
+    \end{enumerate}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        0 and $\alpha^k$ & Polynomial over $GF(2)$ & Sequence over $GF(2)$ \\
+        \hline
+        0 & 0 & 0 0 0 \\
+        $\alpha^0$ & 1 & 0 0 1 \\
+        $\alpha^1$ & $\alpha$ & 0 1 0 \\
+        $\alpha^2$ & $\alpha^2$ & 1 0 0 \\
+        $\alpha^3$ & $\alpha^2 + 1$ & 1 0 1 \\
+        $\alpha^4$ & $\alpha^2 + \alpha + 1$ & 1 1 1 \\
+        $\alpha^5$ & $\alpha$ + 1 & 0 1 1 \\
+        $\alpha^6$ & $\alpha^2 + \alpha$ & 1 1 0\\
+        \hline
+    \end{tabular}
+    
+    \textbf{Generating an LFSR}\\
+    An LFSR based on a primitive polynomial $f$ generates a maximal length PN-sequence. The two standard LFSR configurations are SSRG (simple shift register generator) and MSRG (modular shift register generator)
+    
+    \textbf{SSRG (or Fibonacci Configuration)}\\
+    Chain $n$ blocks, and after each of them take their output, multiply it with the $a_i$ coefficient of the polynomial, XOR all of them, and feed it back to the initial input. Generates the elements of $GF(2^n)$ in an arbitraty order
+    
+    \textbf{MSRG (or Galois Configuration)}\\
+    Chain $n$ blocks, and after each of them feed back the final output XOR'ed with the $a_i$ coefficient of the polynomial. generates the elements of $GF(2^n)$ in successive powers of $\alpha$
+    
+    \textbf{SSRG to MSRG}\\
+    To get the same output with an SSRG and an MSRG, you need to have $f^*(x) = x^n f(x^{-1})$
+    
+    \textbf{State Vector Variation for PN-sequence phase shift}\\
+    An LFSR based on a SSRG will follow the recursive equation:\\
+    $a_k = \sum_{i\leq k} c_i a_{k-i}, a_i \in GF(2), c_i \in GF(2)$\\
+    The output of the LFSR will be $\{a_k\}_{k\in \mathbb{N}}$, or in polynomial form: \\
+    $a(x) = \sum_{i\in \mathbb{N}} a_ix^i$ \\
+    We can prove that $a(x) = \frac{g(x)}{f(x)}$, with $f$ the PP of the SSRG, and $g$ the \textit{generator polynomial}.
+    
+    
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    \textbf{Starting Position and Generator Polynomial}\\
+    For any PN-sequence of period $P = 2^n -1$, each generator polynomial $g$ corresponds to a unique starting position, or \textit{phase shift}\\
+    The first $n$ terms of the $a$ polynomial correspond to the initial conditions and produce the particular shift sequence $\implies$ can be calculated by long division of $g$ for $f$:
+    $\dfrac{g(x)}{f(x)} = a(x) = \dfrac{b(x)}{1 + x^P}$\\
+    $b$ is the first period polynomial. We have the following relation: $D_b = D_g + P - n$. $D_g$ gives us the number of zeros at the end of the first period, with $N_0 = n-1-D_g$.
+    
+    \textbf{Reference phase shift}\\
+    We use the shift given by $g(x) = 1$ as reference for a particular sequence. We know the first period of the sequence will end with $N_0 = n-1$ zeros
+    
+    \textbf{Superposition of shifts}\\
+    When the $g_k$ polynomial has more than one non-zero term, the $a_k$ sequence shift is a superposition of other shifts
+    
+    \textbf{Loading vector}\\
+    The $\{a_k\}_{k < n}$ is the initial loading vector for an SSRG. The loading state is $\frac{g_0(x)}{f(x)} = a_0(x)$
+    
+    \textbf{Predicting registers of SSRG}\\
+    In general, the output of the $i$-th stage is an $i$-bits shift of the 1st stage:
+    $\frac{X^i}{f(x)}$
+    
+    \textbf{Masks and phase shifting}\\
+    For the SSRG, $P=2^n-1$ different shifts of the sequence correspond to $P$ different numerator polynomials: \\
+    $a(x) = \frac{g(X)}{f(X)} = \sum_{k=0}^{n-1}\frac{g_k X^k}{f(X)} = \sum_{k=0}^{n-1} g_k \underbrace{\left(\frac{X^k}{f(X)}\right)}_{k^{th}\ register} \implies g_k(X) = m(X)$
+    
+    \textbf{Arbitrary loading vectors}\\
+    For the LV $\{1 0 \dots 0\}$, the output of either SSRG or MSRG is the shift $\frac{X^{n-1}}{f(X)}$\\
+    For an arbitrary LV, the output will be an arbitrary shift $\frac{X^q \mod f(X)}{f(X)}$, with $q_{SSRG} \neq q_{MSRG}$
+    
+    \textbf{Determining phase shift}\\
+    If the output of the SSRG due to a different loading state produces the shift $\frac{X^q\mod f(X)}{f(X)}$, then with a mask $m(X) = g_k(X)$, the output for the PN-sequence has the same relative delay $d_k = k- (n-1)$ and is represented by a shift $\frac{X^{q+d_k}\mod f(X)}{f(X)}$
+    
+    Example: $f(X) = 1 + X + X^4$, LV is $\{1 0 0 0 \} \implies \frac{X^3}{f(X)}$\\
+    Consider $\{0101\}$ and $m(X) = g_4(X) = 1 + X$, $d_k = k - n + 1 = 1$\\ This means that the output of our PSN will be the output of the R4 with the original LV, shifted by 1
+    
+    
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+
+	\textbf{FDMA number of channels}\\
+	$N = \frac{BW - 2\times BW_{guard}}{BW_{channel}}$
+
+    \textbf{Spread Spectrum notation}\\
+    $S (or\ C) = RE_b$: received signal power (in W)\\
+    $J (or\ I) = WN_o$: received interference power (in W)\\
+    $R=1/T_b$: data rate\\
+    $W$: spread BW (in Hz)\\
+    $E_b$: received energy per signal bit (in W.s)\\
+    $N_o$: noise spectral power density (in W/Hz)\\
+    $\alpha$: signal duty cycle\\
+    $G$: capacity gain\\
+    $F_e$: reuse efficiency
+    
+    \textbf{Spread spectrum equivalent noise-to-signal ratio}\\
+    $\frac{J}{S} = \frac{N_o W}{E_b/T_b} = \frac{W/R}{E_b/N_o}$\\
+    We set $E_b/N_o$ to be the acceptable SNR
+    
+    \textbf{Spread spectrum jamming margin}\\
+    $\text{Margin}(dB)  =\underbrace{\frac{W}{R}}_{\substack{processing\\ gain}}(dB) - \left(\frac{E_b}{N_o}\right)_{req}(dB)$
+    
+    \textbf{Spread spectrum capacity}\\
+    Capacity is proportional to the processing gain $W/R$\\
+    It can be approximated by the linear value of the margin:\\
+    $M \approx \frac{W/R}{E_b/N_o}$ in ideal conditions\\
+    Complete formula: $\boxed{M\approx \frac{W}{R}\frac{1}{E_b/N_o}\frac{1}{\alpha}GF_e}$
+    
+    \textbf{Spread spectrum usual values (for CDMA)}\\
+    $W/R = 128; E_b/N_o=7dB=5; \alpha=0.5; G=2.55; F_e=0.65$\\
+    $\implies M = 85$
+
+    \textbf{Spread spectrum methods}\\
+    Direct spread sequence spread spectrum (DSSS): XOR the signal with a PN-sequence\\
+    Frequency hopping spread spectrum (FHSS): use a PN-sequence of channels at fixed hopping interval
+    
+    \textbf{FHSS modes}\\
+    Fast FH: $T_c < T_s$, change channel multiple times per symbol (combats fading, requires more processing power)\\
+    Slow FH: $T_c \geq T_s$, small processing cost\\
+    $p(t) = s_d(t)c(t) = A\cos\left(2\pi \left(f_o + \frac{1}{2}(b_i + 1)\Delta f\right)t\right)\cos(2\pi f_i t)$
+    
+    \textbf{DSSS Spectrum}\\
+    For a signal of spectrum spread of $\left[-\frac{1}{T};\frac{1}{T}\right]$ and a PN-sequence of spectrum spread $\left[-\frac{1}{T_c};\frac{1}{T_c}\right]$, the combined signal has  a spectrum of $\left[-\left(\frac{1}{T}+\frac{1}{T}\right);\left(\frac{1}{T}+\frac{1}{T_c}\right)\right]$
+    
+    \textbf{CDMA}\\
+    Each user has a $k$-chips code which is XOR-ed with every bit of the transmitted signal. The receiver knows the code of each connected user.
+    
+\end{minipage}
+}
+
+\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    \textbf{SSRG Example}\\
+    For an SSRG with $f(x) = x^4 + x^3 + 1$, calculate a mask that generates a shift $k=7$ and an IV of $\{1 0 0 0\}$.
+    \begin{itemize}
+        \item For these conditions, the output of the final register is $\frac{X^{n-1}}{f(x)}$, ie the output is shifted by $(n-1)$, ie $q = n-1=3$
+        \item To find the mask, we need to shift the output by a relative delay of $k-n+1=7-3=4$:
+    \end{itemize}
+    $m(x) = x^r \mod f(x) = x^{k-q+n-1}\mod f(x) = x^7\mod f(x)$\\
+    $m(x) = x^3 x^4 = x^3(x^3 + 1) = \dots = x^2 + x + 1 = \{1 1 1 0\}$
+    \begin{itemize}
+        \item We can now use $m(x)$ to derive the SSRG and the PSN: use the mask to XOR the values of the corresponding registers together, and output the result
+    \end{itemize}
+    Now for the same $f(x)$ and $IV=\{1110\}$, we want to determine the shift $q$ that is generated.
+    \begin{itemize}
+        \item SSRG output: $a_q(x) = \frac{g_q(x)}{f(x)} = x + x^2 + x^3$ (given by the new IV)
+        \item $g_q(x) = \left. a_q(x) f(x)\right|_{D_g < n} = x+ x^2 + x^3 = x^8$ (by using substitutions with $f(x)$ components)\\
+        $\implies q=8$
+        \item The mask is $m(x) = x^{k-q+n-1}\mod f(x) = x^2 = \{0010\}$
+    \end{itemize}
+
+    \textbf{MSRG Example}\\
+    For an MSRG with $f(x) = x^4 + x^3 + 1$, $k=15$ and $IV=\{1000\}$
+    \begin{itemize}
+        \item The output is $R_n = \frac{X^{n-1}}{f(x)}, q=n-1=3$
+        \item To find the mask, we search $r=k-q+n-1=15$\\
+        $m(x) = \left\{\frac{x^{15}\mod f(x)}{f(x)}\right\}_{D_m < n} = \left\{\frac{1}{f(x)} \right\}_{D_m<n} = 1 + x^3$\\
+        $\implies m(x) = \{1001\}$
+    \end{itemize}
+    For an initial state $s(x) = 1 + x + x^2$, and $s^*(x) = x + x^2 + x^3$
+    \begin{itemize}
+        \item The $g_q(x) = x+ x^2 + x^3 = \dots = x^8 \implies q=8$
+        \item The mask is found from $m(x) = \frac{g_v(x)}{f(x)}$\\
+        $\implies \dfrac{x^{r+q-n+1}\mod f(x)}{f(x)}, r=k-q+n-1=10$\\
+        $g_v(x) = x +x^3 \implies m(x) = x+ x^3 = \{0101\}$
+        \item The MSRG is powered by $s^*(x) = f^*(x) = 1 + x + x^4$
+    \end{itemize}
+    
+                
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    \textbf{Overview of EPS architecture}
+    \begin{enumerate}
+        \item UE attaches to the NW and IDes itself
+        \item NW verifies the ID/permission of user/equipment
+        \begin{itemize}
+            \item MME fetches authentication data from home NW
+            \item MME initiates authentication and key (AKA) agreement with the UE
+        \end{itemize}
+        \item The MME and UE now share a secret key $K_{ASME}$ (ASME: access security management entity)
+    \end{enumerate}
+    
+
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    TODO
+
+
+\end{minipage}
+}
+\end{small}
+\end{document}

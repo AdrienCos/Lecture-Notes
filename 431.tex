@@ -1,0 +1,505 @@
+\documentclass[10pt,letterpaper,landscape]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\usepackage{enumitem}
+\setlist{nosep}
+
+
+\usepackage{graphicx}
+
+\usepackage[left=-0.5cm,right=-0.5cm,top=-0.3cm,bottom=-0.3cm]{geometry}
+
+
+\author{Adrien Cosson}
+\title{Fiches de révision}
+
+
+\newcommand{\boxheight}{21.59cm}
+\newcommand{\boxwidth}{8.85cm}
+
+
+\begin{document}
+\begin{small}
+\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+
+	\textbf{Relative performance}\\
+	$performance = \frac{1}{execution\_time}$
+
+	\textbf{Performance ratio}\\
+	$n_{X/Y} = \frac{perf_X}{perf_Y} = \frac{exec\_time_Y}{exec\_time_X}$
+	
+	\textbf{CPU execution time}\\
+	$time = \#clock\_cycles \times clock\_cycle\_time = \frac{\#clock\_cycles }{clock\_rate}$
+	
+	\textbf{Clock cycles per instruction}\\
+	\textbf{CPI}: average number of clock cycles per instruction in a specific ASI
+	
+	\textbf{Basic equation}\\
+	$CPU\_time = instruction\_count \times CPI \times clock\_cycle$\\
+	$CPU\_time = \frac{instruction\_count \times CPI}{clock\_rate}$
+	
+	\textbf{Average CPI}\\
+	$effective\_CPI = \sum_{i=1}^n (f_i \times CPI_i)$
+	
+	\textbf{Factors of CPU execution time}\\
+	\begin{tabular}{|c|c|c|c|}
+		\hline 
+		& Intruction count & CPI & Clock cycle \\ 
+		\hline 
+		Algorithm & X & x &  \\ 
+		\hline 
+		Programming language & X & x &  \\ 
+		\hline 
+		Compiler & X & X &  \\ 
+		\hline 
+		ISA & X & X & X \\ 
+		\hline 
+		Core organization &  & X & X \\ 
+		\hline 
+		Technology &  &  & X \\ 
+		\hline 
+	\end{tabular} 
+
+	\textbf{Amdahl's Law}\\
+	Used to determine the maximum expected improvement on a system:\\
+	$T_{improved} = \frac{T_{affected}}{improvement\_factor} + T_{unaffected}$\\
+	Corollary: make the common use case fast
+	
+	\textbf{Instruction Sets}\\
+	RISC: Reduced Instruction Set Computer (ARM, MIPS, ...)\\
+	CISC: Complex Instruction Set Computer (x86)
+	
+	\textbf{MIPS design principles}\\
+	\textit{Simplicity through regularity}: fixed seize instructions, opcode in fixed location, \dots\\
+	\textit{Speed through small size}: limited instruction set, load-store architecture, limited number of registries, limited number of memory addressing modes (address = register + constant)\\
+	\textit{Make the common case fast}\\
+	\textit{Good design demands good compromises}
+	
+	\textbf{Fetch/Execute Cycle}
+	\begin{enumerate}
+		\item Fetch the instruction from memory
+		\item Decode and execute the instruction (read memory, executes instruction, write memory)
+		\item Update the PC
+	\end{enumerate}
+
+	\textbf{MIPS}\\
+	3 instructions formats: R (registers), I (immediate) and J (jump)
+	
+	\textbf{MIPS adressing modes}
+	\begin{enumerate}
+		\item Register (in the form of words)
+		\item Base/displacement (base register + offset)
+		\item Immediate addressing
+		\item PC-relative addressing (PC + offset)
+		\item Pseudo-direct addressing (jump)
+	\end{enumerate}
+
+
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+
+	\textbf{MIPS instruction fields}\\
+	\begin{tabular}{|c|c|c|}
+		\hline 
+		Field & Size & Description \\ 
+		\hline 
+		op & 6 bits & Opcode \\ 
+		\hline 
+		rs & 5 bits & First source operand register \\ 
+		\hline 
+		rt & 5 bits & Second source operand register \\ 
+		\hline 
+		rd & 5 bits & Destination register \\ 
+		\hline 
+		shamt & 5 bits & Shift amount \\ 
+		\hline 
+		funct & 6 bits & Function code \\ 
+		\hline 
+	\end{tabular} 
+
+	\textbf{Procedure execution}
+	\begin{enumerate}
+		\item Caller evaluates the args, places the values in the 0-3 registers, stores previous values and allocates run-time stack
+		\item Transfer of control from caller to callee (with \texttt{jal} instruction, writing PC+4 to \texttt{\$ra})
+		\item Callee acquires more storage resources if required (through run-time stack and heap)
+		\item Callee performs its task and stores the result value in designated places (\texttt{\$v0,\$v1} plus optional run-time stack)
+		\item Callee prepares to return control to caller (restore previous register values, frees stack)
+		\item Caller regains control (\texttt{jr} instruction using \texttt{\$ra})
+	\end{enumerate}
+
+	\textbf{Comparison between arithmetical operations}\\
+	For two $n$ bits integers:
+	\begin{itemize}
+		\item Multiply uses $n$ times more gates than add
+		\item Divide is $n$ times longer than add
+	\end{itemize}
+	
+	\textbf{Floating point arithmetic hardware}\\
+	MIPS has a separate Floating Point Register File (FPRF, \$f0-\$f31) and Floating Point ALU (FPALU) 
+	
+	\textbf{Single Cycle Design}\\
+	Fetch, decode and execute are all crammed in one clock cycle (the cycle time is determined by the longest cycle)\\
+	$\rightarrow$ each stage (IFetch, Decode, Exec, Mem, WB) is used once in each cycle
+	
+	\textbf{Pipelining}\\
+	Fetching and decoding an instruction before the previous one has finished its execution\\
+	$\rightarrow$ all the stages are active at the same time
+	
+	\textbf{Pipelining hazards}
+	\begin{itemize}
+		\item Structural: attempt to use the same resource by two instructions at the same time 
+		\item Data: attempt to use the data before it is ready (eg. a source operand needed for an operation is produced by the previous operation)\\
+		$\rightarrow$ fixed by stalling or forwarding
+		\item Control: attempt to make a decision about control flow before the condition has been evaluated (eg. conditional jump) 
+	\end{itemize}
+
+
+	\textbf{Cache Terminology}\\
+	\textit{Block}: minimum unit of information that is present (or not) in the cache\\
+	\textit{Hit Rate}: fraction of memory addresses found in a level of memory hierarchy\\
+	\textit{Hit Time}: time to access a block + time to determine the hit/miss\\
+	\textit{Miss Rate}: 1 - Hit Rate\\
+	\textit{Miss Penalty}: time to replace a block with the contents of a lower level upon cache miss
+
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+
+	\textbf{Direct Mapped Cache}\\
+	Each memory block is mapped to a single cache block (cache address = block address \% cache blocks number)
+	
+	\textbf{Cache Field Sizes}\\
+	32-bits byte address, $2^n$ blocks addressed with $n$ bits, block of size $2^m$ word ($2^{m+2}$ bytes) $\rightarrow$ tag field = $32 - (n + m + 2)$
+	
+	\textbf{Sources of Cache Misses}
+	\begin{itemize}
+		\item Compulsory: first access to a block
+		\item Capacity: cache cannot contain all the blocks accessed by the program
+		\item Conflict/collision: multiple memory locations mapped to the same block 
+	\end{itemize}
+	
+	\textbf{Handling Cache Hits}\\
+	Write hits (on \$D):
+	\begin{itemize}
+		\item If the cache has to be consistent: write the data in both this level and the lower level of cache (use write buffer to write faster)
+		\item If the cache can be inconsistent: write only in this level, and add a "dirty" bit to remember that this data needs to be written to the lower lever when it is evicted
+	\end{itemize}
+	
+	\textbf{Handling Cache Misses (single word blocks)}
+	\begin{itemize}
+		\item Read misses: stall the pipeline, fetch the data from a lower level, store it, send it to the core and resume the pipeline
+		\item Write misses: 
+		\begin{enumerate}
+			\item stall the pipeline, fetch the data from a lower level, store it, get the data from the core and write it, and resume the pipeline
+			\item Write allocate: just write the word (and its tag) into the cache, no need to check for cache hit, no need to stall
+			\item No-write allocate: skip the cache write (but must invalidate that cache block since it will now hold stale data) and just write the word to the write buffer
+		\end{enumerate}
+	\end{itemize}
+
+	\textbf{Handling Cache Misses (multiple word blocks)}
+	\begin{itemize}
+		\item Read Misses: Same as for single blocks (in the case of a non-blocking cache, the core may still access the cache while the cache is handling the miss)
+		\item Write Misses: If using write allocate must first fetch the block from memory and write the word to the block (or could end up with a “garbled” block in the cache (e.g., for 4 word blocks, a new tag, one word of data from the new block, and three words of data from the old block))
+	\end{itemize}
+
+	\textbf{Cache Performance}\\
+	$CPU\_time = IC \times \underbrace{(CPI_{ideal} + memory\_stall\_cycles)}_{CPI_{stall}} \times CC$\\
+	$Read\_stall\_cycles = rd/prog \times miss\_rate \times miss\_penalty$\\
+	$Write\_stall\_cycles = (wr/prog \times miss\_rate \times wwwwwwmiss\_ penalty) + buffer\_stalls$
+	
+	\textbf{Average Memory Access Time}\\
+	$AMAT = hit\_time + miss\_rate \times miss\_penalty$
+	
+	\textbf{N-way Set Associative Cache}\\
+	Allow more flexible block placement: (block address) \% (\# sets in the cache)
+	
+
+	
+	
+	
+	
+	
+	
+
+
+
+\end{minipage}}
+
+\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+	
+	\textbf{Set Associative Cache Use}
+	\begin{enumerate}
+		\item Is it there? Compare \textit{all} the cache tags in the set in the high order $m$ memory address bits to tell if memory block is in the cache
+		\item How to find it? Use next $n$ low order memory address to determine which cache set is  being used 
+	\end{enumerate}
+
+	\textbf{Least Recently Used Heuristic}\\
+	Way to select which block will get replaced when needed
+	
+	\textbf{Multilevel Cache Considerations}\\
+	Primary cache should minimize hit time $\rightarrow$ small size, small blocks\\
+	Secondary cache reduce miss rate $\rightarrow$ larger size, larger blocks, high associativity
+	
+	\textbf{Cache Miss Behaviours}\\
+	\textit{Write through}: Updates next level of memory on every write on this level of memory\\
+	\textit{Write allocate}: Fetches a line into the cache on a cache miss caused by a store\\
+	\textit{Write Back}: Only updates next level of memory when a dirty line is evicted\\
+	\textit{No write allocate}: Store misses go through to the next level of memory without affecting the cache occupancy at the current level
+	
+	\textbf{Cache Prefetching}\\
+	Speculatively prefetch some blocks into the cache to anticipate upcoming cache misses\\
+	Simple case: prefetch the block just after the one we just had a miss on (\textit{next block prefetching})
+	
+	\textbf{Code Transformation}\\
+	Change data access path in order to influence cache hits and miss (by favorising data reuse, through data locality). Ex: loop fusion, loop interchange, iteration space tiling, statement scheduling
+	
+	\textbf{Loop Fusion}\\
+	Merge two adjacents loops into a single one, provided they refer to the same data to enhance \textit{temporal locality}
+	
+	\textbf{Loop Interchange}\\
+	Change the direction of array traversing by swapping the loops used to walk through it. Goal: align data access direction with the memory layout order (ROW-MAJOR or COLUMN-MAJOR)\\
+	$\rightarrow$ exploits \textit{spatial locality}
+	
+	\textbf{Virtual Memory Concepts}\\
+	\textit{Address space}: memory used by a process\\
+	\textit{Page}: virtual memory block\\
+	\textit{Page fault}: virtual memory address translation miss\\
+	A program's address space is divided into \textit{pages}
+	
+	\textbf{Address Translation}\\
+	A virtual address is translated to a physical address by a combination of HW and SW\\
+	Virtual address (32 or 64 bits): virtual page number + page offset\\
+	$\rightarrow$ virtual page number is translated to a physical page number (usually smaller)\\
+	$\rightarrow$ each memory request first needs an address translation from virtual to physical space\\
+	The translation is performed by a \textit{page table} maintained by the OS, stored in main memory. 
+	
+
+	
+	
+	
+	
+	
+	
+	
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+	
+	\textbf{Accelerating Address Translation}\\
+	Keep a (small) cache of the table of translations that is checked before the page table
+	
+	\textbf{TLB Events Combinations}\\
+	\begin{tabular}{|c|c|c|c|}
+		\hline 
+		TLB & Page Table & Cache & Possible? \\ 
+		\hline 
+		\hline 
+		Hit & (Hit) & Hit & Yes (goal) \\ 
+		\hline 
+		Hit & (Hit) & Miss & Yes \\ 
+		\hline 
+		Miss & Hit & Hit & Yes \\ 
+		\hline 
+		Miss & Hit & Miss & Yes \\ 
+		\hline 
+		Miss & Miss & Miss & Yes (page fault) \\ 
+		\hline 
+		Hit & Miss & Miss/Hit & No \\ 
+		\hline 
+		Miss & Miss & Hit & No \\ 
+		\hline 
+	\end{tabular} 
+	
+	\textbf{Calulating AMAT}\\
+	For all type $T$ of memory access (I-Fetch, LoadStore,\dots) and memory level $H$ (L1, L2, RAM, \dots):\\
+	$AMAT(H, T) = AccessTime(H[0], T) + MissRate(H[0], T) * (AMAT(H[1:], T))$\\
+	Take the weighted average of all AMAT over all $T$ by average frequency
+	
+	\textbf{AMAT vs CPI\textsubscript{stall}}\\
+	AMAT is the total end-to-end latency of memory access, while CPI\textsubscript{stall} accounts for the non-ideal (stall) behaviour
+
+	\textbf{Program Dependance at the ISA level}
+	\begin{itemize}
+		\item Read After Write (RAW): later operator consumes produced operand
+		\item Write After Read (WAR): later operator reclaims resource
+		\item Write After Write (WAW): later operator redefines current value
+	\end{itemize}
+	
+	\textbf{Data forwarding}\\
+	Use the result of a \textit{pipeline state register} feed it directly to a functional unit (i.e. ALU) to prevent a data hazard\\
+	$\rightarrow$ done by multiplexing the inputs of the functional units
+	
+    \textbf{Load-use data hazard}\\
+    Dependency backwards in time (using a variable before it is loaded). Can be fixed with a "bubble": a stall in the pipeline to give time to the register to be loaded with the correct value (the stall is implemented by having a \texttt{noop} instruction inserted
+    
+    \textbf{Control Hazards}\\
+    When the flow of instructions stop being sequential, for instance due to a branching instruction with variable destination \\
+    $\rightarrow$ solved by stalling or with branch prediction
+    
+    \textbf{Flushing}\\
+    Way of dealing with a \texttt{jump}-caused conditional hazard by replacing the instruction in the pipeline with a \texttt{noop}
+    
+    \textbf{Branch decision}\\
+    To minimize the impact of branching, we move the branch decision making back to the ID stage: we only get one flush cycle, and need some forwarding to make sure the ID stage has what it needs 
+    
+    \textbf{Delay Branches}\\
+    Always execute the next instruction after the branch, if the instruction is considered "safe" by the MIPS compiler
+    
+	
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][21cm][c]{9.5cm}
+	
+    \textbf{Static branch prediction - Predict Not Taken}\\
+    Assume a given outcome of the branch, and proceed without waiting to see the actual branch result\\
+    $\rightarrow$ if the branch is not taken, business as usual\\
+    $\rightarrow$ if the branch is taken, flush the instruction after the branch and restart the pipeline after the branch instruction\\
+    $\Rightarrow$ works well for "top of the loop" branches, badly for "bottom of the loop" branches
+    
+    \textbf{Other branch prediction system}
+    \begin{itemize}
+        \item Predict Taken: always incur one stall cycle, but works better for "bottom of the loop"
+        \item Dynamic branch prediction: predict branch based on \textit{runtime} information 
+    \end{itemize}
+    
+    \textbf{Branch History Table (BHT)}\\
+    Contains bits that tell whether a a branch was taken the previous times, us it to decide what to predict
+    
+    \textbf{2-bit Dynamic Branch Predictor}\\
+    The branch predictor must predict wrong twice in a row in order for the predict to be changed
+    
+    \textbf{Branch Target Buffer (BTB)}\\
+    Caches the next branch address or instruction (depending on implementation)
+    
+    \textbf{Dealing with Exceptions}\\
+    Stop the offending instruction and save its address, finish the previous instructions, flush the following ones and then jump to a prearranged address
+    
+    \textbf{Exception Types}
+    \begin{itemize}
+        \item Interrupts: caused by external events, simply suspend the execution of the user program
+        \item Traps: caused by internal event, the offending instruction may be retried after handling, and the program may continue or be aborted
+    \end{itemize}
+    
+    \textbf{Multiple Simultaneous Exceptions}\\
+    Handle the exception on the earliest instruction in the pipeline
+
+	\textbf{Super-pipelining}\\
+	Increase the depth of the pipeline to increase the clock rate
+	
+	\textbf{Multiple-issue}\\
+	Fetch and execute multiple instructions at the same time\\
+	$\rightarrow$ we don't use CPI anymore, but IPC (instructions per clock cycle)
+	
+	\textbf{Types of Code Parallelism}
+	\begin{itemize}
+	    \item Instruction-level parallelism (ILP): number of instruction a processor might be able to execute at the same time in a program
+	    \item Data-level parallelism (DLP): possibility to access independant data in a program
+	    \item Machine-level parallelism (MLP): ability of the datapath to exploit the ILP of the program 
+	\end{itemize}
+	
+	
+	
+\end{minipage}
+}
+
+\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+		\textbf{Multiple Instruction Issue Possibilities}
+		\begin{itemize}
+		    \item Statically scheduled: \begin{itemize}
+		        \item Very Long Instruction Word (VLIW): compiler does the work, so the hardware can be dumb
+		        \item Superscalar: Hardware takes care of the parallelisation, so the binaries stay the same
+		        \item Explicitly Parallel Instruction Computing (EPIC): comprimise
+		    \end{itemize}
+		    \item Dynamically scheduled: hardware dynamically determines what can be done in parallel
+		\end{itemize}
+		
+		\textbf{M-U Datapath Responsibilities}
+		\begin{itemize}
+		    \item How many instructions per clock cycle?
+		    \item Storage dependencies $\rightarrow$ data hazards
+		    \item Procedural dependencies $\rightarrow$ control hazards
+		    \tiem Resource conflicts $\rightarrow$ structural hazards
+		\end{itemize}
+		
+		\textbf{Dependance analysis}
+		\begin{itemize}
+		    \item RAW: true dependance, cannot reorder
+		    \item WAR: can reorder if we rename the variables
+		    \item WAW: can reorder if we rename the variables
+		\end{itemize}
+		
+		\textbf{Parallelisation decisions}\\
+		The compiler statically decides which instructions should be executed simultaneously : one "large" instruction is generated, with multiple instructions in it. The compiler does static branch prediction andcode scheduling (with renaming) to avoid WAW and WAR
+		
+		\textbf{Loop Unrolling}\\
+		Compiler makes multiple copies of the loop bodies for different iterations to perform them in parallel. Application of register renaming to get rid of WAW and WAR dependencies
+		
+		\textbf{VLIW Advantages}
+		\begin{itemize}
+		    \item Simpler hardware
+		    \item Potentially more scalable
+		\end{itemize}
+		
+		\textbf{VLIW Disadvantages}
+		\begin{itemize}
+		    \item Higher compiler complexity and longer compilation times
+		    \item Binary code incompatibility
+		    \item Needs a lot of propram memory bandwith
+		    \item Code bloat (lots of \texttt{nops}
+		\end{itemize}
+		
+		
+	\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+		
+		TEST
+		
+	\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+		
+		
+		TEST
+
+	\end{minipage}
+}
+
+\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+		TEST
+		
+		
+	\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+		
+		TEST
+		
+	\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+		
+		
+		TEST
+
+	\end{minipage}
+}
+\end{small}
+\end{document}

@@ -1,0 +1,206 @@
+\documentclass[10pt,letterpaper,landscape]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\usepackage{enumitem}
+\setlist{nosep}
+
+
+\usepackage{graphicx}
+
+\usepackage[left=-0.5cm,right=-0.5cm,top=-0.3cm,bottom=-0.3cm]{geometry}
+
+
+\author{Adrien Cosson}
+\title{Fiches de révision}
+
+\newcommand{\boxheight}{21.59cm}
+\newcommand{\boxwidth}{8.85cm}
+
+
+\begin{document}
+\begin{small}
+\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+    \textbf{STEP 1}\\
+    \textbf{1 - Forward (3D scene pt $\rightarrow$ 2D px)}\\
+    World point $P_{w} = [x_{w} y_{w} z_{w}]^{T}$ \\
+    turns into camera point $P_{c} = [x_{c} y_{c} z_{c}]^{T}$
+
+    \textbf{2 - Forward subroutine}\\
+    Camera pose: $\left[ \underbrace{R}_{3\times3} \vert \underbrace{\tau}_{3\times1} \right]$
+    
+    $P_c = R . P_w + \tau$
+    
+    \textbf{3 - Backprojection (2D $\rightarrow$ 3D)} \\
+    $P_w = R^T (P_c - \tau) = R^T P_c - R^T \tau$\\
+    
+    \textbf{STEP 2}\\
+    \textbf{1 - Perspective projection $P_c \rightarrow [u;v;1]^T$}
+    
+    \textbf{2 - Get coordinates}\\
+    $u = x_c / z_c \qquad v = y_c / z_c $
+    
+    \textbf{3 - Turn pinhole 2D point $[u;v]$ into 3D}\\
+    $[u;v] \rightarrow [u;v;1]$\\
+    
+    \textbf{STEP 3}\\
+    \textbf{1 - Apply nonlinear lens distortion}\\
+    $[u;v] \rightarrow (x,y)$ ("film plane coordinates")
+    
+    \textbf{2 - 1 parameter radial lens distortion}\\
+    $x = u(1 + K_1(u^2 + v^2)) \qquad y = v(1 + K_1(u^2 + v^2))$
+    
+    \textbf{3 - Invert this ($(x,y) \rightarrow [u;v]$)}\\
+    Compute iteratively with $r_{temp} = x^2 + y^2$\\
+    Then $\left\{
+    \begin{matrix} 
+    \tilde{u} = x / ( 1 + K_1 r_{temp}) \\ 
+    \tilde{v} = y / ( 1 + K_1 r_{temp}) 
+    \end{matrix} 
+    \right. $ \\
+    and then start again with $r_{temp} = \tilde{u}^2 + \tilde{v}^2$\\
+    
+    \textbf{STEP 4}\\
+    \textbf{1 - "Film coordinates" $\rightarrow$ pixel $(P_x, P_y)$} \\
+    \textbf{2 - Coordinates of the pixel}\\
+    $\begin{bmatrix}
+    P_x \\ P_y \\ 1
+    \end{bmatrix} = 
+    \begin{bmatrix}
+    f & \alpha & c_x \\
+    0 & f & c_y \\
+    0 & 0 & c_y
+    \end{bmatrix}
+    \times 
+    \begin{bmatrix}
+    x \\ y \\ z
+    \end{bmatrix}$
+    
+    Hence 
+    $\left\{
+    \begin{matrix}
+    P_x = fx- c_x \\
+    P_y = fy - c_y
+    \end{matrix}
+    \right.
+    $
+    
+    \textbf{3 - Get film coordinates from pixel coordinates} \\
+    $\left\{
+    \begin{array}{l}
+    x = \dfrac{P_x - c_x}{f} \\
+    y = \dfrac{P_y - c_y}{f}
+    \end{array}
+    \right.
+    $\\
+    
+    \textbf{Harris Corner Detection (strong gradient)} \\
+    Maximize $E(u,v) = \sum_{x,y} \left[I(x+u, y+v) - I(x, y)\right]^2$ where $(x,y)$ and $(u,v)$ are patches coordinates
+    
+    \textbf{Harris Corner Derivation}\\
+    Take a first order Taylor estimation of the previous equation: \\
+    $\begin{bmatrix} u \\ v
+    \end{bmatrix}FILL\ THIS\ OUT$
+    
+    $\mathbf{M} = \left(\sum \begin{bmatrix}I_x^2 & I_x I_y \\ I_x I_y & I_y^2\end{bmatrix}\right)$ where $I_\alpha$ is the derivative of $I$ in regard to the variable $\alpha$
+    
+    
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    \textbf{Classifying Patch types - Harris method} \\
+    $\lambda_1$ and $\lambda_2$ are the eigenvalues of $\mathbf{M}$.
+    \begin{itemize}
+        \item both are small: flat surface
+        \item only one of them is small: edge
+        \item both are large: corner
+    \end{itemize}
+    
+    $\left\{\begin{array}{l}det(\mathbf{M}) = \lambda_1 \lambda_2 \\
+    trace(\mathbf{M}) = \lambda_1 + \lambda_2\end{array}\right.$
+    
+    If $R = det(\mathbf{M}) - k(trace(\mathbf{M})^2$ (Harris R-score) is:
+    \begin{itemize}
+        \item Large negative: edge
+        \item Around 0: flat
+        \item Large positive: corner
+    \end{itemize}
+    
+    \textbf{Hessian Matrix (high principal curvature)} \\
+    $S(x,y) = S(0,0) + \frac{1}{2}\begin{bmatrix} x & y\end{bmatrix}
+    \begin{bmatrix} \frac{\partial^2S}{\partial x^2} & \frac{\partial^2 S}{\partial x \partial y} \\ 
+    \frac{\partial^2 S}{\partial x \partial y} & \frac{\partial^2S}{\partial y^2} 
+    \end{bmatrix}
+    \begin{bmatrix} x \\ y\end{bmatrix}$
+    \begin{itemize}
+        \item     Search locations where $det(\mathbf{H})=\lambda_1\lambda_2$ is large and positive (meaning a high mountain or valley in intensity), specifically larger than its 8 neighbours
+        \item Search places where the absolute of the Laplacian is large.     Laplacian: $tr(\mathbf{H}) = \nabla^2I(x,y) = I_{xx}(x,y) + I_{yy}(x,y) $
+        \item     Combine both: search places where: $\frac{tr(\mathbf{H})^2}{det(\mathbf{H})} , \frac{(r+1)^2}{r}$ with $r \in [8;10]$
+    \end{itemize}
+    
+    \textbf{Transformation invariance}\\
+    Both methods are resistant to translation (doesn't change intensity) and rotation (doesn't change eigenvalues)\\
+    No resistance to scaling for a constant patch size, yes otherwise
+    
+    \textbf{Blob detection in 2D}\\
+    Define the \textit{characteristic scale} as the scale at which the normalized Laplacian of a Gaussian gives the biggest response. This characteristic scale is a good value for a patch size
+    
+    \textbf{Intensity normalization}\\
+    Normalize patches before trying to match them: $\hat{f} = \dfrac{f - \Bar{f}}{\sqrt{\sum \left(f - \Bar{f}\right)^2}}$
+    
+    \textbf{Normalized correlation}\\
+    Use NC to  match patches: $NCC(f,g) = \sum_{\{i,j\}\in\mathbb{R}} \hat{f}(i,j)\hat{g}(i,j)$
+    
+    \textbf{SIFT steps}
+    \begin{enumerate}
+        \item Find interest patches as described before
+        \item Find patch characteristic orientation: form histogram of gradients orientation in the patch
+    \end{enumerate}
+    $\Rightarrow$ each key point has a center point (location), orientation (rotation) and radius (scale)
+    
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+
+	TODO
+
+
+
+\end{minipage}
+}
+
+\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    TODO
+    
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    TODO
+    
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+
+	TODO
+
+
+
+\end{minipage}
+}
+\end{small}
+\end{document}

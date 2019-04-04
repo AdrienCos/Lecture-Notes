@@ -1,0 +1,116 @@
+\documentclass[10pt,letterpaper,landscape]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\usepackage{enumitem}
+\setlist{nosep}
+
+
+\usepackage{graphicx}
+
+\usepackage[left=-0.5cm,right=-0.5cm,top=-0.3cm,bottom=-0.3cm]{geometry}
+
+
+\author{Adrien Cosson}
+\title{Fiches de révision}
+
+\newcommand{\boxheight}{21.59cm}
+\newcommand{\boxwidth}{8.85cm}
+
+\begin{document}
+\begin{small}
+\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+
+
+	\textbf{Roles of OS: } 
+	\begin{itemize}	
+		\item Service Provider, provides a layer of abstraction from hardware
+		\item Resources Manager, allocates resources (CPU time, RAM, ...) to the software
+		\item Protection Enforcer, prevents software to access unauthorized data
+	\end{itemize}
+
+	\textbf{Hardware overview:}\\
+	L1 cache divided between Instruction L1 and data L1. Reason: instruction are 99\% of the time sequential, data is often random access. L2 is mixed, but is mostly filled with data. 
+	
+	All the peripherals are connected to the CPU via the Memory Bus (DDRx) and the I/O Bus (e.g. PCI)
+	
+	\textbf{CPU}\\
+	CPUs follow a \textit{von Neumann} architecture: CPUs are dumb, need to be given sequence of small instructions to follow. A program is divided into instructions that are then stored in memory. The CPU then decodes the instructions by following the value of the Program Counter register (address of the next instruction)
+	
+	Contents of CPU: 
+	\begin{itemize}
+		\item Registers
+		\item Functional units/ALUs
+		\item PC
+		\item SP/LR
+	\end{itemize}
+
+	\textbf{Interruptions}\\
+	Used to handle asynchronous event, handled at the instruction boundaries (i.e. between two instructions). When the interrupt fires, the hardware pushes the PC on the stack. Once the ISR is finished, we pop the PC and return to the program
+	
+	\textbf{Cache organization}\\
+	Direct Map Cache: hash the name of the object, and store it a the address that corresponds to the hash. To find if the object is present, just lookup the contents of the hash address\\
+	$\rightarrow$ Issue: collision risk\\
+	$\rightarrow$ Solution: allow multiple possible seats per hash("N way set associative cache"?)\\
+	Upon a cache miss, we free a seat if possible (removing the oldest object present), and if necessary update the bumped object in the deeper layers of the memory
+	
+	\textbf{Memory map I/O}\\
+	All the hardware devices are accessible though various addresses like the memory
+	
+	\textbf{Software overview}\\
+	Most programs can be broken down in 4 segments:
+	\begin{itemize}
+		\item Code (instructions)
+		\item Data (static/global variables with fixed size at compilation, contents may change)
+		\item Stack (grows and shrinks with functions/procedures calls)
+		\item Heap (holds dynamic memory, varies with malloc/free)
+	\end{itemize}
+	
+
+
+
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+
+	\textbf{Memory Organization}\\
+	Code and data segments are located at the beginning of the memory (while storing the Code Pointer and Data Pointer). \\
+	The heap is located after the data and grows towards higher addresses. \\
+	The stack is located at the end of the memory and grows towards the lower addresses.
+	
+	\textbf{Program vs. Process}\\
+	A process is a program in execution.\\
+	\texttt{exec()} runs an executable file, pausing the execution of the calling process\\
+	\texttt{fork()} runs a copy of the calling process and both run at the same time
+	
+	\textbf{Multiprocessing options}
+	\begin{itemize}
+		\item Batching: perform the activities one after the other
+		\item  
+	\end{itemize}  
+
+
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+
+	TEST
+
+
+
+\end{minipage}
+}
+\end{small}
+\end{document}

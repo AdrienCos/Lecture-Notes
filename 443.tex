@@ -1,0 +1,458 @@
+\documentclass[10pt,letterpaper,landscape]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\usepackage{enumitem}
+\setlist{nosep}
+
+
+\usepackage{graphicx}
+
+\usepackage[left=-0.5cm,right=-0.5cm,top=-0.3cm,bottom=-0.3cm]{geometry}
+
+
+\author{Adrien Cosson}
+\title{Fiches de révision}
+
+
+\newcommand{\boxheight}{21.59cm}
+\newcommand{\boxwidth}{8.85cm}
+
+
+
+\begin{document}
+\begin{small}
+\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+
+
+	\textbf{Basic Terminology}
+	\begin{itemize}
+		\item Confidentiality: Communication is possible without the attacker learning the contents of the conversation
+		\item Integrity: Verifying that the message has been received intact
+		\item Authentication: Making sure that the participants in the conversation are whoever they are
+		\item Anonymous communication: Allow the sender to communicate anonymously with a recipient
+	\end{itemize}
+
+	\textbf{Threats}\\
+	Threat: means by which an attacker can put a system at risk\\
+	Threat model: collection of threats deemed important in a certain environment (collection of attacker abilities)
+	
+	\textbf{Vulnerability}\\
+	Systematic artefact that exposes data, user or system to a threat
+	
+	\textbf{Adversary}\\
+	Entity trying to circumvent a security infrastructure\\
+	$\rightarrow$ an \textit{insider} is an adversary that has legitimate access
+	
+	\textbf{Attack}\\
+	When an attacker tries to exploit a vulnerability
+	\begin{itemize}
+		\item Passive
+		\item Active
+		\item DoS
+	\end{itemize}
+	$\rightarrow$ a \textit{compromise} is when an attack is successful
+	
+	\textbf{Trust}\\
+	Degree to which we expect an entity to behave\\
+	$\rightarrow$ a \textit{trust model} describes who is trusted in a particular environment
+	
+	\textbf{Principles of security}
+	\begin{enumerate}
+		\item Open Design: no "security through obscurity"
+		\item Least Privilege: just grant the privileges required to perform a function
+		\item Fail-Safe Defaults: if a permission is not explicitly granted, is should be denied (ie. if you fail a permission check, stop
+		\item Economy of Mechanism : keep it simple to keep it safe
+		\item Complete Mediation : every access to any resource is checked for authorization
+		\item Separation of Privilege : a system should use multiple authentications
+		\item Least Common Mechanism : minimize common mechanisms between users
+		\item Psychological Acceptability : system needs to be ergonomic
+	\end{enumerate}
+
+	\textbf{IoT}\\
+	Devices that integrate physical processes with digital connectivity
+	
+	\textbf{Crypto Terminology}\\
+	\textit{Cryptosystem}: method of disguising plaintext messages that only select parties can decipher\\
+	\textit{Cryptography}: the art/science of developing cryptosystem\\
+	\textit{Cryptanalysis}: the art/science of breaking cryptosystem\\
+	\textit{Cryptology}: The combination of cryptography and cryptanalysis
+	
+	\textbf{Shared/Symmetric Key Cryptography}\\
+	$D(E(p,k),k) = C$ where $k$ is the shared key
+	
+	\textbf{One-Time Pad (OTP)}\\
+	To obtain ciphertext, XOR the plaintext with the secret key (the one-time pad), where $len(plaintext) == len(OPT)$\\
+	$\mathbb{P}[M=m\vert C=c] = \mathbb{P}[M=m] \rightarrow$ you learn nothing more by having the ciphertext
+	
+
+
+
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+
+	\textbf{Two kinds of confidentiality}
+	\begin{itemize}
+		\item Unconditional/probabilistic security: offer provable guarantee, irrespective of computational abilities\\
+		$\rightarrow len(key) \approx len(message)$
+		\item Conditional/computational security: cryptosystem is secure under the assumption of a computationally bounded adversary\\
+		$\rightarrow len(key) \ll len(message) $
+	\end{itemize}
+
+	\textbf{Cipher Attack Classes}
+	\begin{itemize}
+		\item Ciphertext-only: adv. only has the ciphertext
+		\item Known-plaintext: adv. has pairs of plaintext/ciphertext
+		\item Chosen-plaintext: adv. can obtain the ciphertext of any plaintext
+		\item Chosen-ciphertext: adv. can obtain the plaintext of any ciphertext (except the target one)
+	\end{itemize}
+
+	\textbf{Kerckhoff's Principles}
+	\begin{enumerate}
+		\item Assume Eve knows the cipher algorithm
+		\item Security should only depend on the key
+		\item If the key is compromised, it should be able to be changed
+	\end{enumerate}
+
+	\textbf{Key Reuse in the OTP encryption}\\
+	XOR-ing two different ciphertexts results in the XOR-ing of the two plaintexts: 
+	$C_1 \oplus C_2 = P_1 \oplus k\ \oplus P_2 \oplus k = P_1 \oplus P_2$\\
+	This can help obtain a specific plaintext, that can then be used to obtain the key: $ P \oplus C = P \oplus P \oplus k = k$
+	
+	\textbf{Hash Function Requirement:}
+	\begin{itemize}
+		\item Fixed size digest
+		\item Irreversibility
+		\item Few collisions
+	\end{itemize}
+
+	\textbf{Key management}\\
+	\textit{Key Distribution}: process where we assign and transfer keys to a participant\\
+	\textit{Key Agreement}: process where multiple parties negotiate a key
+	
+	\textbf{Diffie-Hellman key exchange}\\
+	Public information: $p$ is a prime, $g$ is a primitive root of $p$ ($g < p$)\\
+	Participants pick $x_1$ and $x_2$ ($x < p-1$)\\
+	$y_1 = g^{x_1} \mod p$\\
+	$z = y_2 ^ {x_1} \mod p$
+	
+	\textbf{Diffie-Hellman vulnerability}\\
+	Man-in-the-middle attack, because DH does not implement any authentication
+	
+	\textbf{Public/asymmetric cryptography}\\
+	$D(E(p, k_e), k_d) = p$\\
+	$E(D(p, k_d), k_e) = p$
+	
+	\textbf{RSA keygen}
+	\begin{enumerate}
+		\item Pick two large primes $p$ and $q$
+		\item Calulate $n = p*q$
+		\item Pick $e$ such as it is coprime with $\Phi(n) = (q-1)*(p-1)$
+		\item Calculate $d$ such as	TO COMPLETE
+	\end{enumerate}
+	Public key: ${e, n}$\\
+	Private key: ${d, n}$\\
+	$E(k_e, p) = p^d \mod n$\\
+	$D(k_d, p) = c^e \mod n$\\
+	Hard to break because it requires to factor $n$ as $p*q$
+
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+
+	\textbf{Digital Signature Properties}
+	\begin{itemize}
+		\item Not forgeable
+		\item Authenticity check
+		\item Not alterable
+		\item Non-repudiation
+	\end{itemize}
+
+	\textbf{Authentication Vocabulary}\\
+	\textit{Credential}: proof of identitfy\\
+	\textit{Evaluation}: Processes used to asses the link between an identity and a credential
+	
+	\textbf{Certificate}
+	\begin{itemize}
+		\item Associates a user and a private key
+		\item Contains pubkey information
+		\item Has a validity period
+		\item Is signed by a Certificate Authority (CA)
+		\item Identity may be vetted by a Registration Authority (RA)
+	\end{itemize}
+
+	\textbf{Root CA certificate}\\
+	Certificate baked into the system (browser, OS) by default, that is the original root of trust
+	
+	\textbf{Certificate Management terminology}\\
+	\textit{Issuer}: agent that issues/signs a certificate\\
+	\textit{Subject}: agent whose key is about\\
+	\textit{Verifier}: agent who wants to check someone's else key\\
+	\textit{Target}: agent whose key is being searched for\\
+	\textit{Principal}: anything that has a public key\\
+	\textit{Trust anchor}: anything trusted to sign certificate
+	
+	\textbf{Public Key Infrastructure (PKI)}\\
+	Rooted tree of CA, where any CA can issue certificates for its children $\rightarrow$ generates a cascading trust chain\\
+	$\rightarrow$ Issue: any CA can generate malicious children CA
+	
+	\textbf{PKI Issues}
+	\begin{enumerate}
+		\item Why/how can we trust a CA? No legal liability to run a bad CA, only incentive is the risk of going bankrupt
+		\item Who is using my key? Private key is insecure
+		\item How secure is the verifier? The verifier is vulnerable, the root pubkey has to be kept safe
+		\item How to identify the owner of a private key? No publicly known identifier for people
+		\item Is the CA an authority? CA can claim authenticity on elements it does not have any control
+		\item Is the user part of the design? Too many things are hidden to the user
+		\item Was it one CA or CA+RA? Separation of CA and RA can allow forgery
+		\item How was the user authenticated in the first place?
+		\item How secure are the certificate practises? People don't use them correctly
+		\item Why are we using PKI? Certificates are not the perfect solution to authenticate a user, it just identify a key
+	\end{enumerate}
+
+	\textbf{Identity base Cryptography (IBE)}\\
+	Use an arbitrary string as a public key (i.e. your email address). A trusted third party generates a private key for everyone based on their arbitrary string. The TTP is then not used anymore, as the keypair is in possession of the used.
+
+
+
+\end{minipage}
+}
+
+\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+		
+		
+		
+		\textbf{IBE issues}
+		\begin{itemize}
+			\item No universal TTP
+			\item Still ambiguity as to who someone is (there are multiple John Smith in the world)
+			\item Revocation is not fixed, even worse
+		\end{itemize}
+	
+		\textbf{Biometrics issues}
+		\begin{itemize}
+			\item No revocation possible
+			\item "Fuzzy" credential
+			\item Privacy issues
+		\end{itemize}
+	
+		\textbf{Challenge/Response Authentication} \\
+		Server sends a nonce, client responds with: \\ $response = H(H(name:realm:password):nonce:H(request))$
+		
+		\textbf{Protocol notation}\\
+		$d$: data, payload\\
+		$pw^A$: password for $A$\\
+		$k_{AB}$: symmetric key between $A$ and $B$\\
+		$K_A^+$, $K_A^-$: public/private keypair of $A$\\
+		$E(k, d)$: $d$ encrypted with $k$\\
+		$D(k, d)$: $d$ encrypted with $k$\\
+		$Sig(K_A^-, d$ is the signature of $d$ with by Alice\\
+		$H(d)$ is the hash of data $d$
+		
+		\textbf{Authentication Handshake} \\
+		Authenticate each other, then establish session keys
+		
+		\textbf{Reflection attack}\\
+		Using a handshake session as the oracle for another handshake session\\
+		$\rightarrow$ use different keys for A-B and B-A\\
+		$\rightarrow$ don't reuse challenges \\
+		$\rightarrow$ the initiator should be the first one to authenticate
+		
+		\textbf{Two-Way Public Key Based Authentication}\\
+		Establish a session key by using Diffie-Hellman with signed partial keys exchanged
+		
+		\textbf{Mediated Authentication}\\
+		Have a Key Distribution Center (KDC) generate a ticket that will serve as a session key with your target
+		
+		\textbf{Kerberos Ticket}\\
+		A Kerberos ticket has the properties: 
+		\begin{itemize}
+		    \item Alice only can open it
+		    \item Contains a session key $K^{AB}$
+		    \item Contains a token that can only be opened by Bob, that contains: 
+		    \begin{itemize}
+		        \item Alice's identity
+		        \item The session key $K^{AB}$
+		    \end{itemize}
+		\end{itemize}
+		
+    \textbf{Security Policies Goals}
+    \begin{itemize}
+        \item Secrecy: don't allow reading by unauthorized subjects, control where data can be written by authorized users
+        \item Integrity: don't permit dependence on lower integrity code/data
+        \item Availability: the necessary function must run
+    \end{itemize}
+    
+    \textbf{Trusted Computing Base}\\
+    Infrastructure that you assume will behave correctly
+		
+		
+		
+	\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+		
+		
+		\textbf{Protection Domain}\\
+		Domain that restricts access of external parties to our computing system's resources
+		
+		\textbf{Policy}\\
+		Set of rules that define what you can/can't/must do
+		
+		\textbf{Access policy enforcement}\\
+		\textit{Protection state}: defines what each subject can do\\
+		\textit{Reference monitor}: enforces the protection state, meets the following guarantees: 
+		\begin{itemize}
+		    \item Tamper-proof
+		    \item Complete Mediation
+		    \item Simple enough to verify
+		\end{itemize}
+		
+		\textbf{Protection system components}\\
+		Consists of a protection state, operations to modify that state, and a reference monitor to enforce that state
+		
+		\textbf{Access Control System}\\
+		System that determines what rights a particular subject has for a set of objects. An \textit{Access Control Policy} defines theses rights
+		
+		\textbf{Access Matrix}\\
+		Way to represent a policy for a set of subjects and objects
+		
+		\textbf{Protection vs Security}\\
+		\textit{Protection}: Security goals are met under trusted processes, protects against an error by a non-malicious entity\\
+		\textit{Security}: Security goals are met under all processes, protects against malicious entities
+		
+		\textbf{Access Control Administration}
+		\begin{itemize}
+		    \item Discretionary: the owner defines the policy
+		    \item Mandatory: the environment enforces a static policy
+		\end{itemize}
+		
+		\textbf{Label}\\
+		Signifier of some identity or characteristic in a MAC system
+		
+		\textbf{Access Matrix for DAS vs MAC}\\
+		For DAC: 
+		\begin{itemize}
+		    \item Subjects: users
+		    \item Objects: files, sockets, ...
+		    \item Administration: user
+		\end{itemize}
+		For MAC: 
+		\begin{itemize}
+		    \item Subjects: labels
+		    \item Objects: labels
+		    \item Administration: external
+		\end{itemize}
+		
+		\textbf{Role}\\
+		Collection of privileges \& permissions associated with some function or affiliation
+		
+        \textbf{Network effect}\\
+        The more people use a protection system, the more effective the system gets 
+        
+        \textbf{End-to-end argument}\\
+        In order to optimize a network, make the center of it very dumb, and the edges smart
+        
+        \textbf{Network terminology}\\
+        LAN: Local area network\\
+        Edge: Point in a LAN through which the network connects to a larger area network
+        
+
+	\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+		
+		
+		\textbf{IP layers}\\
+        Physical - Link (framing between both ends of the link) - Network (routing between two points) - Transport (transfer from source to destination) - Application
+        
+        \textbf{High-jacking traffic}\\
+        A malicious router in a network advertises a bad route metric to cause congestion
+
+		\textbf{DNSsec}\\
+		PKI infrastructure over DNS, to provide signature of every DNS message by all the layers in the DNS chain
+		
+		\textbf{Communication security}
+		\begin{itemize}
+		    \item Authenticate end points
+		    \item TODO
+		\end{itemize}
+		
+		\textbf{IPsec}\\
+		Transparent security suite, that operates at the IP layer. Creates a new layer between IP and TCP/UDP: AH (authentication header, provides integrity) and ESP (encapsulating security payload, provides confidentiality)
+		
+		\textbf{IPsec modes of operation}
+		\begin{itemize}
+		    \item Tranport: encrypt the payload, MAC part of the header (non-mutable fields)+encrypted payload
+		    \item Tunnel: encrypt everything, MAC it and add a new header
+		\end{itemize}
+		
+		\textbf{Firewall types}
+		\begin{itemize}
+		    \item IP Firewall, defines a policy based on address, port, protocol, interface, flags,\dots
+		    \item Proxy Firewall, at the application level: analyses the transaction and decides if it should be forwarded
+		\end{itemize}
+		
+		\textbf{X-listing}\\
+		Blacklisting: specifying specific connectivity that is explicitly disallowed \\
+		Whitelisting: specifying specific connectivity that is explicitly allowed
+		
+		\textbf{Stateful vs Stateless}\\
+		Stateful: makes a decision based on information that happened before\\
+		Stateless: only uses the current transaction information to make a decision
+		
+		
+		\textbf{DMZ}\\
+		De-militarized zone: sub-network quarantined from internal network and internet facing services
+		
+		\textbf{NIDS} \\
+		Network Intrusion Detection System
+		
+		
+	\end{minipage}
+}
+
+\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+		
+		
+		
+		TEST
+		
+		
+		
+		
+	\end{minipage}
+}\fbox{
+	\begin{minipage}[t][21cm][c]{9.5cm}
+		
+		
+		TEST
+		
+	\end{minipage}
+}\fbox{
+	\begin{minipage}[t][21cm][c]{9.5cm}
+		
+		
+		TEST
+		
+		
+		
+	\end{minipage}
+}
+\end{small}
+\end{document}

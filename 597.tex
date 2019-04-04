@@ -1,0 +1,154 @@
+\documentclass[10pt,letterpaper,landscape]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\usepackage{enumitem}
+\setlist{nosep}
+
+
+\usepackage{graphicx}
+
+\usepackage[left=-0.5cm,right=-0.5cm,top=-0.3cm,bottom=-0.3cm]{geometry}
+
+
+\author{Adrien Cosson}
+\title{Fiches de révision}
+
+\newcommand{\boxheight}{21.59cm}
+\newcommand{\boxwidth}{8.85cm}
+
+
+\begin{document}
+\begin{small}
+\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    \textbf{MIMO system} \\
+    Multiple Input - Multiple Output system \\
+    Sending signals $x$ and $y$ to antennas $b_1$ and $b_2$ \\
+    $b_1 = \frac{x}{l_{x1}} + \frac{y}{l_{y1}}$ and $b_2 = \frac{x}{l_{x2}} + \frac{y}{l_{y2}}$ where $l$ are the loss factors
+    
+    \textbf{Column Space}\\
+    Set of all the vectors that are a linear combination of the column the matrix $\mathbf{M}$\\
+    $\forall \mathbf{M} \in \mathbb{R}^{n,m}, C(\mathbf{M}) = \{y \in \mathbb{R}^n \vert \exists x \in \mathbb{R}^m ; \mathbf{M}x = y\} $ \\
+    The column space is a vector space and a subspace of $\mathbb{R}^n$
+    
+    \textbf{Null Space} \\
+    Set of all the vectors $v$ that satisfy $\mathbf{M}.v = 0$ for a given matrix $\mathbf{M}$ \\
+    $\forall \mathbf{M} \in \mathbb{R}^{n, m}, N(\mathbf{M}) = \{v \in R^m | A.v = 0\}$ \\
+    The null space is a vector space and a subspace of $\mathbb{R}^m$
+    
+    \textbf{Rank–nullity theorem} \\
+    $\forall \mathbf{M} \in \mathbb{R}^{n,m}, dim(\mathbf{M}) = rk(\mathbf{M}) + dim (N(\mathbf{M}))$ \\
+    where $rk(\mathbf{M}) = dim(C(\mathbf{M))}$
+    
+    \textbf{Existence and uniqueness of a solution to $\mathbf{A}x = b$}
+    \begin{itemize}
+        \item $b \notin C(\mathbf{A}) \implies \forall b\in \mathbb{R}^n, \mathbf{A}x != b$
+        \item $b \in C(\mathbf{A}), dim(N(\mathbf{A})) = 0 \implies \exists ! b \in \mathbb{R}^n, \mathbf{A}x = b$
+        \item $b \in C(\mathbf{A}, dim(N(\mathbf{A})) > 0 \implies \exists b \in \mathbb{R}^n, \mathbf{A}x = b$
+    \end{itemize}
+    
+    \textbf{Linear Independence}\\
+    A set of $n$ vectors are linearly independant iff: \\
+    $\forall \{c_1, \dots, c_n\} \neq \{0, \dots, 0\} \in \mathbb{R}^{n}, \sum_i c_i v_i \neq 0 $
+    
+    A set of $n$ vectors are linearly dependant iff: \\
+    $\exists \{c_1, \dots, c_n\} \neq \{0, \dots, 0\} \in \mathbb{R}^n, \sum_i c_i v_i = 0 $
+
+    \textbf{Basis}\\
+    Set of linearly independent vectors of $\mathbf{V}$ who spawn $\mathbf{V}$. For a given vector space, there are an infinity of vector spaces.
+    
+    \textbf{Dimension} \\
+    Number of vector in any basis of a vector space
+    
+    \textbf{Rank} \\
+    Dimension of the column space or row space of a matrix \\
+    $rk(\mathbf{M}) = dim(C(\mathbf{M})) = dim(C(\mathbf{M}^T))$
+    
+    \textbf{Subspace} \\
+    A subspace is a subset of a vector space, it is still a vector space.
+    
+    \textbf{Inner product} \\
+    Product of $x^T$ and $y$ where $x,y \in \mathbb{R}^n$ \\
+    $x^T y = \sum_i x_i y_i$\\
+    $\mathbf{M}x.y = x.\mathbf{M}^Ty$
+    
+    \textbf{Orthogonality} \\
+    $x \perp y \iff x^T y = 0$
+    
+    \textbf{Row space} \\
+    Column space of $\mathbf{M}^T$
+    
+    \textbf{Left Nullspace} \\
+    Null space of $\mathbf{M}^T$
+    
+    \textbf{Important property} \\ 
+    $\forall \mathbf{M} \in \mathbb{R}^{n, m}, \underbrace{N(\mathbf{M})}_{dim = m - r} \perp \underbrace{C(\mathbf{M}^T)}_{dim = r} \quad and \quad \underbrace{N(\mathbf{M}^T)}_{dim = n - r} \perp \underbrace{C(\mathbf{M})}_{dim = r}$
+    
+    \textbf{Linear transformation} \\
+    $T$ is a linear transformation iff: \\
+    $\left\{ 
+    \begin{array}{l}
+    T(x + y)  = T(x) = T(y) \\
+    T(\alpha x) = \alpha T(x)
+    \end{array}
+    \right.$
+    
+    
+    
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    \textbf{Least squares}\\
+    We want to solve $\mathbf{A}x = b$ but $b \notin C(\mathbf{A})$. We search $b_2$ such that $\mathbf{A}x_s = b_2$, with $x_s$ being the approximated solution.
+    
+    We define the error as $e = b_2 - b$. In order to minimize the error, we need $e \perp b_2$, so $e \perp C(\mathbf{A})$.
+    
+    Hence, after calculations: \fbox{$x_s = (\mathbf{A}^T\mathbf{A})^{-1}\mathbf{A}^T b$}
+    
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+
+	TODO
+
+
+
+\end{minipage}
+}
+
+\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    TODO
+    
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    TODO
+    
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+
+	TODO
+
+
+
+\end{minipage}
+}
+\end{small}
+\end{document}
