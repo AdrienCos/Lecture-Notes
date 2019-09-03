@@ -389,10 +389,10 @@
     \end{itemize}
     For an initial state $s(x) = 1 + x + x^2$, and $s^*(x) = x + x^2 + x^3$
     \begin{itemize}
-        \item The $g_q(x) = x+ x^2 + x^3 = \dots = x^8 \implies q=8$
-        \item The mask is found from $m(x) = \frac{g_v(x)}{f(x)}$\\
+        \item Find the shift of the reference $g_q(x) = x+ x^2 + x^3 = \dots = x^8 \implies q=8$
+        \item The mask is found from $m(x) = \frac{g_r(x)}{f(x)}$\\
         $\implies \dfrac{x^{r+q-n+1}\mod f(x)}{f(x)}, r=k-q+n-1=10$\\
-        $g_v(x) = x +x^3 \implies m(x) = x+ x^3 = \{0101\}$
+        $g_r(x) = x^{10} = x +x^3 \implies m(x) = x+ x^3 = \{0101\}$
         \item The MSRG is powered by $s^*(x) = f^*(x) = 1 + x + x^4$
     \end{itemize}
     
@@ -460,7 +460,12 @@
         \item Verify the integrity of every control message
         \item No integrity protection of user data (except in the case of relays)
     \end{itemize}
-    
+    Visibility and Confidentialy of Security:
+    \begin{itemize}
+        \item Ciphering indicative
+        \item User can have PIN-based access control to the UICC
+    \end{itemize}
+
 
     
     
@@ -469,7 +474,57 @@
 }\fbox{
 \begin{minipage}[t][\boxheight][c]{\boxwidth}
 
-    TODO
+    Platform security for the eNB\\
+    Lawful interception:
+    \begin{itemize}
+        \item Contents of comms and related info
+    \end{itemize}
+    Emergency:
+    \begin{itemize}
+        \item Even without UICC
+    \end{itemize}
+    IMS security for Voice over LTE/5G
+    
+    \textbf{EPS Authentication and Key Agreement}\\
+    Users are identified by their IMSI = MCC+MSN+MSIN
+    \begin{itemize}
+        \item MCC: Mobile Country Code
+        \item MSN: Mobile (home) NW Code
+        \item MSIN: Mobile Subscriber ID \#
+    \end{itemize}
+    IMSI is used to ID the permanent auth key $K$ stored in the Authentication Center (AuC) and in the USIM
+    
+    \textbf{Machine Type Communication (MTC)}\\
+    Characterized by comms without human in the loop, exists in 3 genres: MTC applications/devices/servers
+    
+    \textbf{MTC Security Framework}
+    \begin{itemize}
+        \item M2M device SCLs (service capability layer): DSCL
+        \item M2M network SCLs: NSCL
+        \item Interfaces: dIa, mIa, mId
+    \end{itemize}
+    
+    \textbf{Bootstrapping}
+    \begin{enumerate}
+        \item M2M applications register themselves w/ DSCL and NSCL
+        \item When a device connects to the NW, first bootstrap then registration
+        \item M2M service bootstrapping (happens once in the lifetime of the association between the device and the service)
+        \begin{itemize}
+            \item Device gets an ID
+            \item Root key (Kmr) is generated
+        \end{itemize}
+        \item M2M service connection (can occur multiple times during the lifetime)
+        \begin{itemize}
+            \item Generates a session key Kmc
+            \item Each application has a separate key Kma, derived from the Kmc
+            \item Kma is used to derive the traffic keys (integrity and ciphering keys)
+        \end{itemize}
+        \item SCL Registration:
+        \begin{itemize}
+            \item DSCL registers w/ NSCL
+            \item Both apps have the same security context that enables secure comms
+        \end{itemize}
+    \end{enumerate}
 
 
 \end{minipage}

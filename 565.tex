@@ -1,0 +1,177 @@
+\documentclass[10pt,letterpaper,landscape]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\usepackage{enumitem}
+\setlist{nosep}
+
+
+\usepackage{graphicx}
+
+\usepackage[left=-0.5cm,right=-0.5cm,top=-0.3cm,bottom=-0.3cm]{geometry}
+
+
+\author{Adrien Cosson}
+\title{Fiches de révision}
+
+\newcommand{\boxheight}{21.59cm}
+\newcommand{\boxwidth}{8.85cm}
+
+
+\begin{document}
+\begin{small}
+\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    \textbf{Principles in algo. design}
+    \begin{enumerate}
+        \setcounter{enumi}{-1}
+        \item Brute-force
+        \item Transform prob. into smaller sub-probs.
+        \begin{itemize}
+            \item Divide prob. into multiple ones ($\Rightarrow$ divide and conquer)
+            \item Reduce size by 1 ($\Rightarrow$ dynamic programming)
+        \end{itemize}
+        \item Iterative improvement
+        \begin{itemize}
+            \item Linear programming
+            \item Network flow
+            \item Local search
+            \item Greedy algo.
+        \end{itemize}
+    \end{enumerate}
+    
+    \textbf{Relationships among problems}
+    \begin{enumerate}
+        \item Hierarchy of probs.
+        \item Reduction: if $P_1$ can be reduced to $P_2$, then :
+        \begin{itemize}
+            \item $P_2$ is at least as hard as $P_1$
+            \item An algo. that solves $P_2$ solves $P_1$
+        \end{itemize}
+    \end{enumerate}
+    
+    \textbf{Algos. for hard probs.}
+    \begin{enumerate}
+        \item Approximation algo.:\\
+        $\exists c, \forall x, \frac{algo(x)}{opt(x)} \leq c$
+        \item Randomized algo.:\\
+        $\exists c, c_1, \forall x,
+        \left\{\begin{array}{l}
+            \mathbb{P}(algo(x) = opt(x)) \geq c \\ 
+            \mathbb{P}(algo(x) \leq c_1 \times opt(x)) \geq c
+        \end{array}\right.$
+    \end{enumerate}
+    
+    \textbf{Algo. analysis}
+    \begin{enumerate}
+        \item Theoretical guarantee
+        \begin{itemize}
+            \item Optimality
+            \item Approximation guarantee
+        \end{itemize}
+        \item Running time
+    \end{enumerate}
+    
+    \textbf{Big O notation}\\
+    $f = O(g) \iff \exists M>0, \exists n_0, \forall n\geq n_0, f(n) \leq M.g(n)$
+    
+    \textbf{Big Omega notation}\\
+    $f = \Omega(g) \iff \exists M>0, \exists n_0, \forall n\geq n_0, f(n) \geq M.g(n)$ \\
+    $f = \Omega(g) \iff g = O(f)$
+    
+    \textbf{Big Theta notation}\\
+    $f = \Theta(g) \iff \exists M, K, \exists n_0, \forall n \geq n_o, M. g(n) \leq f(n) \leq K.g(n)$
+    
+    \textbf{Small o notation}\\
+    $f = o(g) \iff \lim_{n\to \infty} \frac{f(n)}{g(n)} = 0$
+
+    \textbf{Divide and conquer algorithms}
+    \begin{enumerate}
+        \item Partition the prob.
+        \item Recursively solve each sub-prob.
+        \item Combine all the solutions to the sub-prob. into one
+    \end{enumerate}
+    Ex: merge sort
+    
+    \textbf{Master Theorem proof}\\
+    $\left\{\begin{array}{rl}
+        T(n) &= a.T(n/b) + f(n)  \\
+        T(1) &= 1 
+    \end{array}\right.$ \\ 
+    \begin{tabular}{c|c|c}
+        layer & \# nodes & cost \\
+        0 & 1 & $f(n)$ \\
+        1 & $a$ & $f(n/b)$ \\
+        2 & $a^2$ & $f(n/b^2)$ \\
+        $k-1$ & $a^{k-1}$ & $f(n/b^{k-1})$
+    \end{tabular} \\
+    $ \implies T(n) = \sum_{i=0}^{k-1} a^i f(n/b^i) + a^k.T(n/b^k)$ \\
+    Assume $n = b^m$, let $k=m$: \\
+    $T(n) = \sum_{i=0}^{m}a^i f(n/b^i)$\\
+    Assume $f(n) = n^d$ : \\
+    $T(n) = n^d \sum_{i=0}^m \left(\dfrac{a}{b^d}\right)^i$
+    
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    \textbf{Master Theorem result} (for $f(n) = n^d$)
+    \begin{itemize}
+        \item $a = b^d, d = \log_b a \implies T(n) = \Theta(n^d \log n)$
+        \item $a > b^d, d < \log_b a \implies T(n) = \Theta(a^{\log_b n}) = \Theta(n^{\log_b a})$
+        \item $a < b^d, d> \log_b a \implies T(n) = \Theta(n^d)$
+    \end{itemize}
+    note: log base is irrelevant in $\Theta$-notation
+    
+    \textbf{Master Theorem} (for $f(n) = n^d \log^s n$)
+    \begin{itemize}
+        \item $d = \log_b a \implies T(n) = \Theta(n^d \log^{s+1} n)$
+        \item $d < \log_b a \implies T(n) = \Theta(n^{\log_b a})$
+        \item $d > \log_b a \implies T(n) = \Theta(f(n))$
+    \end{itemize}
+    
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+
+	TODO
+
+
+
+\end{minipage}
+}
+
+\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    TODO
+    
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    TODO
+    
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+
+	TODO
+
+
+
+\end{minipage}
+}
+\end{small}
+\end{document}

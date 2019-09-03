@@ -1,0 +1,104 @@
+\documentclass[10pt,letterpaper,landscape]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\usepackage{enumitem}
+\setlist{nosep}
+
+
+\usepackage{graphicx}
+
+\usepackage[left=-0.5cm,right=-0.5cm,top=-0.3cm,bottom=-0.3cm]{geometry}
+
+
+\author{Adrien Cosson}
+\title{Fiches de révision}
+
+\newcommand{\boxheight}{21.59cm}
+\newcommand{\boxwidth}{8.85cm}
+
+
+\begin{document}
+\begin{small}
+\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    \textbf{Contents of a process}\\
+    Stored in a PCB:
+    \begin{itemize}
+        \item Memory (code, data, stack, heap)
+        \item Registers/SP/PC
+        \item Page table
+        \item OS information (files, sockets, accounting,...)
+    \end{itemize}
+    
+    \textbf{Context switch}
+    \begin{enumerate}
+        \item Push registers
+        \item Save stack pointer
+        \item Save pointers to address space
+        \item Find next process to run, and its PCB
+        \item Load pointers to address space
+        \item Load stack pointer
+        \item Pop registers
+        \item Return
+    \end{enumerate}
+    
+    \textbf{User vs kernel level threads}
+    \begin{itemize}
+        \item User-level switches more efficiently
+        \item Kernel-level does better resource allocation
+    \end{itemize}
+    
+    \textbf{}
+
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    TODO
+    
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+
+	TODO
+
+
+
+\end{minipage}
+}
+
+\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    TODO
+    
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    TODO
+    
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+
+	TODO
+
+
+
+\end{minipage}
+}
+\end{small}
+\end{document}

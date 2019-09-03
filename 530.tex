@@ -1,0 +1,193 @@
+\documentclass[10pt,letterpaper,landscape]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\usepackage{enumitem}
+\setlist{nosep}
+
+
+\usepackage{graphicx}
+
+\usepackage[left=-0.5cm,right=-0.5cm,top=-0.3cm,bottom=-0.3cm]{geometry}
+
+
+\author{Adrien Cosson}
+\title{Fiches de révision}
+
+\newcommand{\boxheight}{21.59cm}
+\newcommand{\boxwidth}{8.85cm}
+
+
+\begin{document}
+\begin{small}
+\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    \textbf{Power consumption issue}\\
+    Power used by a chip is $P \approx \frac{1}{2}CV_{dd}^2Af$ \\
+    Naive solution: reduce $V_{dd}$
+    \begin{itemize}
+        \item Leakage limits how low you can go
+        \item Other solution: reduce $f$ and increase nb of cores\\
+        $\implies$ needs programs to be parallelizable
+    \end{itemize}
+    
+    \textbf{Five principles of perf.}
+    \begin{itemize}
+        \item Parallelism
+        \item Speculation
+        \item Locality
+        \item Memorization
+        \item Amdahl's Law
+    \end{itemize}{}
+
+    \textbf{Parallelism}\\
+    $T_n$: time to compute a problem with $n$ cores \\
+    Average parallelism : $P_{avg} = \frac{T_1}{T_\infty}$\\
+    For a $p$ wide system:\\
+    $T_p \geq \max(\frac{T_1}{p}, T_\infty)$ \\
+    $P_{avg} \gg p \implies T_p \approx \frac{T_1}{p}$
+
+    \textbf{Speculation}\\
+    Make educated guesses to avoid expensive operations, if you can be right most of the time
+    
+    \textbf{Locality}
+    \begin{itemize}
+        \item Temporal: if you accessed data, you are likely to access it again soon
+        \item Spatial: if you accessed data, you are likely to access its neighbour soon
+    \end{itemize}
+    
+    \textbf{Memorization}\\
+    Remember the answer to expensive computations in case it comes up again
+    
+    \textbf{Amdahl's Law}\\
+    If we can increase a fraction $f$ of a task by a factor of $S_{task}$:\\
+    $\boxed{S_{total} = \dfrac{1}{(1-f) + \dfrac{f}{S_{task}}}}$
+    
+    \textbf{Performace measurement}\\
+    \textit{Latency}: time to perform a fixed task\\
+    \textit{Throughput}: number of tasks in a fixed time\\
+    $\implies$ not most contradictory
+    
+    \textbf{Perf. improvement}\\
+    Proc. A is $X$ times faster than . proc. B if:\\
+    TODO
+    
+    \textbf{Averaging perf.}\\
+    Latencies can be added, but not throughputs:\\
+    $Lat(P1 + P2) = Lat(P1) + Lat(P2)$\\
+    $Thr(P1 + P2) = \frac{1}{\frac{1}{Thr(P1)} + \frac{1}{Thr(P2)}}$
+    
+    \textbf{Averages}\\
+    Arithmetic (for time): $\frac{1}{N}\sum_i f(i)$\\
+    Harmonic (for rates): $\frac{N}{\sum_i \frac{1}{f(i)}}$\\
+    Geometric (for ratio): $\sqrt[N]{\prod_i f(i)}$
+    
+    \textbf{Processor perf.}\\
+    $Perf = \underbrace{\frac{instructions}{program}}_{executed\ instructions} \times \underbrace{\frac{cylces}{instruction}}_{CPI} \times \underbrace{\frac{time}{cycle}}_{clock}$ 
+    
+
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    \textbf{MIPS}\\
+    $MIPS= CPI \times clock \times 10^{-6}$
+    
+    \textbf{Power-perf. metrics}\\
+    Power-delay: $PDP = P_{avg} \times t$\\
+    Energy-delay: $EDP = PDP \times t$\\
+    Energy-delay squared: $EDDP = EDP * t$
+    
+    \textbf{ISA}\\
+    Instruction Set Architecture: abstraction layer between the software and hardware (facilitates dev., provides portability) 
+    
+    \textbf{Good ISA traits}
+    \begin{itemize}
+        \item Programmability: easy to express programs efficiently
+        \item Implementability: easy to make high-perf / low-power / low-cost / etc. implementations
+        \item Compatibility: new generations do not break old software
+    \end{itemize}
+    
+    \textbf{Sequential Model}
+    \begin{enumerate}
+        \item Fetch
+        \item Decode
+        \item Read
+        \item Execute
+        \item Write
+    \end{enumerate}
+    
+    \textbf{Seven dimensions of ISA}
+    \begin{enumerate}
+        \item Class: load-store, register-memory,\dots
+        \item Instr. encoding: fixed or variable length
+        \item Types \& sizes of operands: 8-bit, 16-bit,\dots
+        \item Addressing mode: register, immediate, \dots
+        \item Memory addressing: byte-aligned, not aligned
+        \item Operations: arithmetic, control, \dots
+        \item Control flow: conditional branches, jump, \dots
+    \end{enumerate}
+    
+    \textbf{Class: operand model}\\
+    How many explicit operands?
+    \begin{itemize}
+        \item 3: general purpose
+        \item 2: multiple explicit accumulators
+        \item 1: one implicit accumulator
+        \item 0: hardware stack
+        \item 4+: special cases
+    \end{itemize}
+    
+    \textbf{Instruction length}
+    \begin{itemize}
+        \item Fixed length: simple implementation, low code density
+        \item Variable length: high code density, complex fetch
+    \end{itemize}
+    
+
+    
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+
+	TODO
+
+
+
+\end{minipage}
+}
+
+\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    TODO
+    
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    TODO
+    
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+
+	TODO
+
+
+
+\end{minipage}
+}
+\end{small}
+\end{document}
