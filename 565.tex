@@ -139,13 +139,271 @@
         \item $d > \log_b a \implies T(n) = \Theta(f(n))$
     \end{itemize}
     
+    \textbf{Half-plane intersection problem}\\
+    \textit{Claim:} $C = \{h_i\}_i$ is convex\\
+    \textit{Proof:} A half-plane is convex, and the intersection of convex sets is convex
+    
+    \textbf{Designing a sweep-line algo.}
+    \begin{enumerate}
+        \item Order (how are we scanning)
+        \item Events (what are we searching for)
+        \item Actions (what we do when we find it)
+        \item Status (how do we store it)
+    \end{enumerate}
+    
+    \textbf{Half-plane intersection problem}\\
+    Running time of combine: $O(n)$\\
+    Running time of full algo: $T(n) = 2 T(n/2) + O(n)$\\
+    $\boxed{T(n)= \Theta(n\log(n))}$
+    
+    \textbf{Dual of a point}\\
+    Let $p = (p_x, p_y) \in \mathbb{R}^2$ be a point, we define its dual $p^*$ as a line of equation $y = p_x x - p_y$
+    
+    \textbf{Dual of a line}\\
+    Let $l: y = ax + b$ be a line, we define its dual $l^*$ as a point of coordinates $(a, -b)$
+    
+    \textbf{Properties}
+    \begin{itemize}
+        \item $(p^*)^* = p$
+        \item $(l^*)^*) = l$
+        \item $p \in l \iff l^* \in p^*$
+        \item $p$ is above $l \iff l^*$ is above $p^*$
+    \end{itemize}
+    
+
+    
+    
 \end{minipage}
 }\fbox{
 \begin{minipage}[t][\boxheight][c]{\boxwidth}
 
 
-	TODO
+	\textbf{Spanning Tree}\\
+	\textit{Def:} Let $G = (V, E)$ be an undirected graph. Let $T = (V_1, E_1)$ be a tree. We say $T$ is a spanning tree of $G$ if $V_1 = V$ and $E_1 \subseteq E$ \\
+	\textit{Fact:} If $\vert E_1 \vert = \vert V \vert -1$, then $T(V, E_1)$ is a spanning tree of $G(E, V)$.
+	
+	\textbf{Minimum Spanning Tree (MST)}\\
+	Spanning tree $T$ of a graph $G$ such that the sum of the cost of the edges of $E_1$ is minimal
+	
+	\textbf{Cut (for graphs)}\\
+	\textit{Def (cut):} partition $C = (S, V-S)$ of a graph $G(V, E)$, $S \subseteq V$\\
+	\textit{Def (cut-edge):} Let $C = (S, V-S)$ be a cut, the cut-edges of $C$ are $W(C) = \left\{ (u,v) \in E \vert u \in S, v\in V-S \right\}$\\
+	\textit{Property (cut-property):} Let $E_1$ be a subset of the edges of an MST $T^* = (V, E^*)$ (partial optimal solution). Let $C= (S, V-S)$ be a cut of $G$ such that $E(C) \cap E_1 = \emptyset$. Let $e^* = \min_{e\in E(C)} w(e)$. Then we have that $E_1 \cup \{e^*\}$ is in some MST.
+	
+	\textbf{Prim's Algorithm}
+	\begin{itemize}
+	    \item Select a vertex at random
+	    \item While all vertices are not in the tree, find the minimum-weight edge that connect the tree to a vertex not in the tree, and add it to the tree
+	\end{itemize}
+	$\implies$ running time: $O((\vert V \vert + \vert E \vert)\log\vert V\vert)$
+	
+	\textbf{Prim's algo. data-structures}
+	\begin{itemize}
+	    \item $E_1$: current partial solution
+	    \item $S[1\dots n]$: stores the vertices of $E_1$
+	    \item $PQ$: priority queue that stores $V-S$\\
+	    $key(u) = \min_{(u,v)\in E(C)} w(e)$
+	\end{itemize}
+	
+	\textbf{Kruskal's Algorithm}
+	\begin{itemize}
+	    \item Sort all the edges of $G$
+	    \item While all vertices are not in the tree, remove the smallest edge from $G$, and if it does not form a cycle if added to the tree, add it.
+	\end{itemize}
 
+    \textbf{Network}\\
+    Let $G = (V,E)$ be a directed graph, let $c(e) \geq 0$ be the capacity for any $e\in E$. Let $s\in V$ be the source vertex of $G$. Let $t\in V$ be the sink vertex of $G$. The network is $G = (V,E,c,s,t)$.
+    
+    \textbf{Network flow}\\
+    We say a mapping $f: E\rightarrow R^+$ is a flow is $f$ satisfies:
+    \begin{itemize}
+        \item Capacity constraint: $\forall e\in E, o \leq f(e) \leq c(e)$
+        \item Conservation constraint: $\forall v\in V\\ \{s,t\}, \sum_{e\in I(v)} f(e) = \sum_{e\in O(v)} f(e)$\\
+        where $I(v) = \{(u,v) \in E\}$ and $O(v) = \{(v,w) \in E\}$
+    \end{itemize}
+    
+    \textbf{Value of a flow}\\
+    Let $f$ be a flow of $G = (V,E,c,s,t)$, we define its value as $|f| = \sum_{e=(s,v)} f(e)$\\
+    \textit{Property: } $|f| = \sum_{e=(v,t)} f(e)$
+    
+    \textbf{Max-flow problem}\\
+    \textit{Input:} A network $G = (V,E,c,s,t)$\\
+    \textit{Output: } A flow $f$ of $G$ s.t. $|f|$ is maximized\\
+    \textit{Algorithm:} Ford-Fulkson algorithm, based on iterative improvement
+
+\end{minipage}
+}
+
+\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    \textbf{Ford-Fulkson algo.}\\
+    Initialize $f = 0$. Find  a path $P$ from $s$ to $t$, and add its bottleneck (defined as $\min_{e\in P} c(e)$) to all the edges of $P$ to $f$. 
+    
+    \textbf{Residual network}\\
+    Let $f$ be a flow of $G = (V,E,c,s,t)$. The residual network $G_f$ is defined as $G_f = (V_f, E_f, c_f, s_f, t_f)$ with:
+    \begin{itemize}
+        \item $V_f = V, s_f = s, t_f = t$
+        \item $c_f(e) = c(e) - f(e)$ in one direction, and $c_f(e) = f(e)$ in the other one
+    \end{itemize}
+    
+    \textbf{Residual network claim}\\
+    Let $g$ be a flow of $G_f$. We can find a new flow $f'$ of $G$ s.t. $|f'| = |f| + |g|$
+    
+    \textbf{CATCH UP WITH MISSED LECTURES}
+    
+    
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    \textbf{Prolynomial-time reduction}\\
+    Let $X$ and $Y$ be two problems, if any instance of $X$ can be solved by polynomial-time calls to a solver of $Y$, plus polynomial number of operations, then $X$ is polynomial-time reducible to $Y$: $X \leq p Y$
+    
+    \textbf{Satisfiability problem (SAT)}
+    \begin{itemize}
+        \item Binary variables: $X_i$
+        \item Literal: $X$ and $\overline{X}$
+        \item Clause: disjunction of a set of literals
+    \end{itemize}
+    Problem: 
+    \begin{itemize}
+        \item Input: $m$ binary variables, $n$ clauses
+        \item Output: Whether there exists a assignment for all variables such that each clause is true
+    \end{itemize}
+    
+    
+    \textbf{2SAT problem}\\
+    Each clause contains exactly 2 literals. This can be solved in polynomial time.
+    
+    \textbf{Independent-set problem}\\
+    Let $G=(V,E)$ be an undirected graph, let $V_1 \subseteq V$. $V_1$ is an independent subset iff $\forall u,v\in V, (u,v) \notin E$\\
+    Problem:
+    \begin{itemize}
+        \item Input: $G = (V,E)$
+        \item Output: Independent subset $V_1$ s.t. $|V_1|$ is maximized
+    \end{itemize}
+    
+    \textbf{Decision problem for I.S.}
+    \begin{itemize}
+        \item $G=(V,E), k$
+        \item Whether $G$ contains an indpt subset $V_1$ s.t. $|V_1| = k$
+    \end{itemize}
+    
+    \textbf{Equivalence of I.S. and I.S.(k)}
+    \begin{itemize}
+        \item $IS(k) \leq p IS$ (trivial)
+        \item $IS \leq p IS(k)$: run the IS(k) algo. for all values of $k$ from $|V|$ to $1$
+    \end{itemize}
+    
+    \textbf{Problem sets}
+    \begin{itemize}
+        \item P: set of decision problems that are solvable in polynomial time (i.e. there exists a solver for this problem in polynomial-time)
+        \item NP: set of problems that are verifiable in polynomial-time (i.e. there exists a verifier for this problem in polynomial-time)
+    \end{itemize}
+    
+    \textbf{NP-complete}\\
+    Let $X\in NP$, if $\forall X' \in NP, X' \leq pX$, then X is NP-complete
+    
+    \textbf{Transitivity of polynomial-time reduction}\\
+    $X \leq pY, Y \leq pZ \implies X \leq pZ$\\
+    $X^* \in NPC, X\in NP, X^* \leq p X \implies X \in NPC$
+    
+    \textbf{Proving a problem is NPC}
+    \begin{itemize}
+        \item Prove that $X \in NP$
+        \item Chose $Y \in NPC$
+        \item Prove that $Y \leq p X$
+    \end{itemize}
+    
+    \textbf{3D matching problem}
+    \begin{itemize}
+        \item Input: $X,Y,Z, E \subseteq X*Y*Z$
+        \item Output: $M \subseteq E$ s.t. each element of $E$ apprears at most once in $M$, and $|M|$ is maximized
+    \end{itemize}
+    
+    \textbf{Perfect 3D matching problem}
+    \begin{itemize}
+        \item Input: same as 3D matching, with $|X| = |Y| = |Z| = n$
+        \item Output: same as 3D matching, with $|M| = n$
+    \end{itemize}
+    
+
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+
+	\textbf{Hamiltoniam path problem}
+	\begin{itemize}
+	    \item Input: directed graph $G=(V,E)$
+	    \item Output: decide if there exists a \textit{path} that traverses each vectex exactly once
+	\end{itemize}
+	$\implies$ NPC problem
+	
+	\textbf{Hamiltionian cycle problem}
+	\begin{itemize}
+	    \item Input: directed graph $G=(V,E)$
+	    \item Output: decide if there exists a \textit{cycle} that traverses each vertex exactly once
+	\end{itemize}
+	$\implies$ NPC problem
+	
+	\textbf{Traveling salesman problem (TSP)}
+	\begin{itemize}
+	    \item Input: $n$ cities, distance matrix $D$, where $D_{i,j}$ is the distance between cities $i$ and $j$
+	    \item Output: A tour (a circular permutation) that visits all the cities and comes back to the starting place, such that the total travel distance is minimized
+	\end{itemize}
+	$\implies$ NPC problem
+	
+	\textbf{Decision-TSP}
+	\begin{itemize}
+	    \item Input: distance matrix $D$, constant $C$
+	    \item Output: decide is there exists a tour such that the total distance is bounded by $C$
+	\end{itemize}
+	$\implies$ NPC problem
+	
+	\textbf{Problems equivalences}
+	\begin{itemize}
+	    \item H-path $\leq p$ H-cycle
+	    \item H-cycle $\leq p$ H-path
+	    \item TSP $\leq p$ Decision-TSP
+	    \item Decision-TSP $\leq p$ TSP
+	\end{itemize}
+	
+	\textbf{K-coloring problem}
+	\begin{itemize}
+	    \item Input: undirected graph $G=(V,E)$, integer $K$
+	    \item Output: decide is there exists a coloring ($f:V\rightarrow [1,K]$) s.t $\forall (u,v) \in E, f(u) \neq f(v)$
+	\end{itemize}
+	$\implies$ 2-coloring is in P, 3-coloring is NPC
+
+    \textbf{Subset-sum problem}
+    \begin{itemize}
+        \item Input: $X=(X_1, \dots, X_n) \in \mathbb{R}^n$, constant $C$
+        \item Output: decide is there exists a subset $X' \subseteq X$ s.t. $\sum_{x\in X'} x = C$
+    \end{itemize}
+    $\implies$ NPC problem
+    
+    \textbf{Complementary problem}\\
+    Given a problem $X$, $\overline{X}$ is its complementary if the output of each instance of $X$ is the opposite of the same instance of $\overline{X}$\\
+    $X \leq p \overline{X}, \overline{X} \leq p X$\\
+    $X\in P \implies \overline{X} \in P$\\
+    $\overline{X} \in P \implies X \in P$
+    
+    \textbf{CoNP}\\
+    Let X be a decision problem. We say $X\in CoNP$ if there exists a polynomial-time algo. (verfier V) s.t. 
+    \begin{enumerate}
+        \item V takes an instance $I$ of $X$, and a polonomial-time certificate $C$ as input
+        \item For any instance $I$ of $X$, $I$ is a NO instance iff there exists a certificate $C$ s.t. $V(I,C) = NO$
+    \end{enumerate}
+    $X\in NP \iff \overline{X} \in CoNP$
+    
+    \textbf{Complexity sets relationship}
+    \begin{itemize}
+        \item $P \in NP$
+        \item $P \in CoNP$
+        \item $P = NP \implies NP = CoNP$
+    \end{itemize}
 
 
 \end{minipage}
@@ -154,23 +412,138 @@
 \fbox{
 \begin{minipage}[t][\boxheight][c]{\boxwidth}
 
-    TODO
+    \textbf{Integrer factorization problem (IF)}
+    \begin{itemize}
+        \item Input: An integer $X$, an integer $n$
+        \item Output: decide is there exists a factor $x$ of $X$ s.t. $2 \leq x \leq n$
+    \end{itemize}
+    $\implies IF \in NP$
+    
+    \textbf{Quantified SAT problem (QSAT)}
+    \begin{itemize}
+        \item Input: $m$ binary variables, $n$ clauses, quantifier formula $F$
+        \item Output: decide if $F$ is true
+    \end{itemize}
+    $\implies QSAT \notin NP$
+    
+    \textbf{PSPACE}\\
+    Set of problems that can be solved in polynomial space\\
+    $NP \in PSPACE, CoNP \in PSPACE$
+    
+    \textbf{NP-hard (NPH)}\\
+    Lest $X$ be a problem. If for any problem $X' \in NP, X' \leq p X$, then $X$ is NP-hard\\
+    $\implies$ NP-hard problems are at least as hard as NPC problems\\
+    $\implies NPC = NPH \cap NP$
+    
+    \textbf{NPH algo.}
+    \begin{enumerate}
+        \item Approximation algo \\
+        $\forall I, \frac{algo(I)}{opt(I)} \leq c$
+        \item Randomized algo \\
+        $\forall I, \mathbb{P}(algo(I) = opt(I)) \geq \delta$ \\
+        $\forall I, \mathbb{P}(\frac{algo(I)}{opt(I)} \leq c) \geq \delta$
+        \item Fixed-parameter treatable algo.\\
+        Algo $I(I_n, k)$ runs in $O(f(k)P(n))$, where $f(k) = O(2^k)$, use small $k$
+    \end{enumerate}
+    
+    \textbf{Vertex-cover problem}
+    \begin{itemize}
+        \item Input: undirected grapg $G = (V,E)$
+        \item Output: a vertex cover $C \subseteq V$ s.t. $|C|$ is minimized
+        \item Brute-force: $O(2^{|V|}|E|)$
+        \item Goal: design an FPT algo. for VC problem (returns false if $opt > k$, $opt$ otherwise $\implies O(k2^kn)$)
+    \end{itemize}
+    
+    \textbf{VC-FPT algo}\\
+    Pick and edge $e=(u,v)$, and compute $VC-FPT(G-u, k-1)$ and $VC-FPT(G-V, k-1)$. If they both return false, return false. Otherwise, return the minimum set unioned with the vertex removed from it\\
+    $\implies O(k2^k |V|)$
+    
+    \textbf{VC-FPT with kernelization}\\
+    \textit{Kernelization:}\\
+    If there is a vertex of degree $\geq k+1$, add $k$ to $C$ and recurse. If there is a vertex of degree 0, remove it and recurse. Return $(G, C,k)$.\\
+    $\implies |E| \leq k^2, |V| \leq k(k+1)$ if $opt \leq k$\\
+    \textit{Algo: }\\
+    Kernelize the graph, if there are more edges or vertices than expected, return false. Otherwise, run the previous algo, and returns its output unioned with $C$.\\
+    $\implies O(|V|^2 + k^3 2^k)$
+
+\end{minipage}
+}\fbox{
+\begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    \textbf{VC-approx}\\
+    Goals:
+    \begin{itemize}
+        \item Runs in polynomial-time
+        \item $\forall G=(V,E), \frac{VC_{approx}(G)}{OPT(G)} \leq 2$
+    \end{itemize}
+    Greedy method: while all the edges are not covered, find an uncovered edge and add it to the cover set
+    
+    \textbf{Set cover problem}
+    \begin{itemize}
+        \item Input: $X \in \mathbb{R}^n, S = \{S_1,\dots, S_m\}, S_i \subseteq X$
+        \item Output: $S' \subseteq S | \bigcup\limits_{A\in S'} A = X, |S'|$ is minimized
+    \end{itemize}
+    
+    \textbf{Weighted set cover problem}
+    \begin{itemize}
+        \item Input: $X \in \mathbb{R}^n, S = \{S_1,\dots, S_m\}, S_i \subseteq X, w(S_i)$
+        \item Output: $S' \subseteq S | \bigcup\limits_{A\in S'} A = X, \sum\limits_{A\in S'}w(A)$ is minimized
+        \item Greedy approximation: while $X$ is not covered, find the set of minimum weight per uncovered node and add it to the cover (set: $c(X) = \frac{w(S_k}{|S_k \cap R |})$
+    \end{itemize}
+    
+    \textbf{Approximate WSC}\\
+    $\sum_{A\in C}w(A) = \sum_{x\in S_k} c(X)$\\
+    $\forall S_k \in S, \sum_{x\in S_k} c(X) \leq H(|S_K|)w(S_k)$\\
+    $OPT = \sum_{A\in C^*} w(A) \geq \sum_{A\in C^*} \frac{\sum_{x\in A}c(X)}{H)|A|)}$\\
+    $\implies \sum_{A\in C} w(A) \leq H(|d^*|) OPT \leq H(n) OPT \leq \log(n)OPT$
+
+    \textbf{Linear Programming (LP)}\\
+    $\min w^Tx | \left\{\begin{array}{l}
+        Ax \leq b \\
+        x \geq 0
+    \end{array}\right.$\\
+    $\implies$ polynomial-time
+    
+    \textbf{Integer Linear Programming (ILP)}\\
+    $\min w^Tx | \left\{\begin{array}{c}
+        Ax \leq b \\
+        x_i \in \mathbb{N}
+    \end{array}\right.$\\
+    $\implies$ ILP is NPH
+    
+    \textbf{LP + rounding for approximation algo.}
+    \begin{enumerate}
+        \item Formulate the problem into an ILP
+        \item Relax ILP to LP
+        \item Solve the relaxed LP $\implies x^*$
+        \item Round $x^*$ into an integral solution $x'$ s.t. it is a feasible solution of ILP
+        \item Prove the approximation ratio
+    \end{enumerate}
+    
+    
     
 \end{minipage}
 }\fbox{
 \begin{minipage}[t][\boxheight][c]{\boxwidth}
 
-    TODO
+    \textbf{MAX-SAT problem}
+    \begin{itemize}
+        \item Input: variables $\{x_i\}$, clauses $\{C_i\}$
+        \item Output: assignment for $\{x_i\}$ s.t. the number of satisfied clauses is maximized
+        \item Algo: RAND-MAX-SAT: set each $x_i$ to 1 with a probability of $\frac{1}{2}$
+    \end{itemize}
     
-\end{minipage}
-}\fbox{
-\begin{minipage}[t][\boxheight][c]{\boxwidth}
-
-
-	TODO
-
-
-
+    \textbf{LP + random rounding}
+    \begin{enumerate}
+        \item Formulate the MAX-SAT problem as ILP
+        \item Relax ILP to LP
+        \item Solve LP to get $\{x_i^*\}$
+        \item Random rounding: (for MAX-SAT) independently set each $x_i$ to 1 with a probability of $x_i^*$
+    \end{enumerate}
+    
+    \textbf{Inequality of arithmetic and geometric means}\\
+    $\prod_{i=0}^n a_i \leq \left( \frac{\sum_{i=0}^n a_i}{n} \right)^n$
+	
 \end{minipage}
 }
 \end{small}

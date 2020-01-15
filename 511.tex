@@ -58,30 +58,243 @@
         \item Kernel-level does better resource allocation
     \end{itemize}
     
-    \textbf{}
+    \textbf{Synchronization methods}
+    \begin{itemize}
+        \item Blocking
+        \item Busy waiting
+    \end{itemize}
+    
+    \textbf{Problem with critical sections}\\
+        A process halting in a CS block all others that need to access it
+        
+    \textbf{System latency}\\
+    Largest number of steps the system can take without any of the processes successfully completing an operation in a non-blocking implementation
+    
+    \textbf{Process latency}\\
+    Same but for wait-free implementation
+    
+    \textbf{Optimistic concurrency control}\\
+    Assume that no one else is modifying the same data as you, perform all your operations on a shadow copy of the data structure, and commit it once you are finished. If the commit fails, restart.
+    
+    \textbf{Event ordering approaches}
+    \begin{itemize}
+        \item Causality: if event X happens, then event Y happens
+        \item Time-based (use a clock to get a total ordering)
+    \end{itemize}
+
+    \textbf{Partial ordering}\\
+    We define the partial order $\rightarrow$ as:
+    \begin{itemize}
+        \item If $a$ and $b$ are events, and $a$ happens before $b$, then $a\rightarrow b$
+        \item If $a$ is a send, and $b$ its receive, then $a\rightarrow b$
+        \item $a\rightarrow b, b\rightarrow c \implies a\rightarrow c$
+    \end{itemize}
+    
+    \textbf{Logical clock}
+    \begin{itemize}
+        \item Each process $P_i$ gets a clock $C_i$
+        \item $C_i(a)$ is the time at which event $a$ happened for process $P_i$
+        \item $a\rightarrow b \implies C_i(a) < C_i(b)$
+        \item If $a$ is send by $P_i$ and $b$ is receive by $P_j$, then\\ $C_j(b) = \max(C_j, C_i(a)) + 1)$
+    \end{itemize}
+    
+    \textbf{Getting a total order}\\
+    Sort all events based on their logical clock values. Break ties with a deterministic rule.
 
 \end{minipage}
 }\fbox{
 \begin{minipage}[t][\boxheight][c]{\boxwidth}
 
-    TODO
+
+	\textbf{Atomic Operations}
+	\begin{itemize}
+	    \item \texttt{test\&set(x)}: sets \texttt{temp} to \texttt{x}, \texttt{x} to \texttt{BUSY} and returns \texttt{temp}
+	    \item \texttt{fetch\&add(x, y)}: sets \texttt{temp} to \texttt{x}, \texttt{x} to \texttt{x+y} and returns \texttt{temp} 
+	    \item \texttt{compare\&swap(A,B,C)}: if \texttt{A==C}, swaps \texttt{A} and \texttt{B}
+	\end{itemize}
+
+    \textbf{Concurrent Data Structures goals}
+    \begin{itemize}
+        \item Non-blocking: some process will complete in a finite number of steps
+        \item Wait-free: all processes will complete in a finite number of steps
+    \end{itemize}
+    
+    \textbf{Physical clock conditions}
+    \begin{itemize}
+        \item $\left| \frac{dC_i}{dt} -1 \right| < k \ll 1$
+        \item $|C_j(t) - C_i(t) | < e$
+        \item $C_i(t + \mu) - C_i(t) > \mu (1-k)$
+        \item For $C_j(t + \mu) - C_i(t) > 0, \mu > \dfrac{e}{1-k}$ 
+    \end{itemize}
+    
+    \textbf{Physical clock receive}\\
+    $C_j(t') = \max(C_j(t'), C_i(t) + \mu)$
+
+    \textbf{Lamport Mutex Algo}
+    \begin{itemize}
+        \item A process sends a REQUEST to all processes with a timestamp
+        \item All processes place the request in a local queue, and respond with a ACK + timestamp
+        \item A process sends a timestamped RELEASE to all others
+        \item All processes remove the request from the local queue
+        \item A process gets the resource if it has the most recent request and everyone has ACKed him
+    \end{itemize}
+    $\implies O(3(N-1))$ messages complexity
+    
+    \textbf{Ricart \& Agrawala Algo}\\
+    Only send an ACK when you think the request should proceed before you.\\
+    $\implies O(2(N-1))$
+    
+    \textbf{Suzuki \& Kasami Algo.}\\
+    One process has PRIVILEGE at all time, and only passes it along if it does not need it anymore, upon request.\\
+    $\implies O(N)$ messages
+
+    
+    \textbf{Remote Procedure Call Goals}
+    \begin{itemize}
+        \item Easy to use (close to normal procedure calls)
+        \item Efficient communication (close to HW transmission time)
+    \end{itemize}
+    
+    \textbf{RPC components}
+    \begin{itemize}
+        \item Runtime: hides the details of the transport mechanism
+        \item Stub: hides the difference between local and remote call
+    \end{itemize}
+    
+    \textbf{RPC architecture}\\
+    Process and stub share a single address space. Each runtime can handle multiple client/server at one
+    
+    \textbf{RPC stub generation}\\
+    User defines an interface definition, and the RPC compiler generates cstubs and sstubs
+    
+    \textbf{RPC binding}\\
+    Client specifies a service name. The mapping from service to machine ID is stored in a name server. 
+    
+ 
+    
     
 \end{minipage}
 }\fbox{
 \begin{minipage}[t][\boxheight][c]{\boxwidth}
 
-
-	TODO
-
-
-
+    
+    \textbf{Name server population}
+    \begin{itemize}
+        \item Server calls \texttt{export()} in sstub
+        \item sstub calls \texttt{ExportInterface()} in srt
+        \item \texttt{ExportInterface()} sends a message to Grapevine and registers the server
+        \item srt maintains data about the export in a table (contains if, dispatcher, machine ID)
+    \end{itemize}
+    
+    \textbf{Name server use}
+    \begin{itemize}
+        \item Client calls \texttt{import()} in cstub
+        \item cstub calls \texttt{ImportInterface()} in crt
+        \item crt sends a message to Grapevine
+        \item Grapevine sends address of exporter back
+        \item crt sends message to srt for binding information
+        \item cstub stores binding information (netwk addr, ID, table idx) 
+    \end{itemize}
+    
+    \textbf{RPC network protocol optimization}\\
+    Use server return value as call ACK, and client next call as return ACK. If needed, send an actual ACK while work is processed
+    
+    \textbf{Call ID purposes}
+    \begin{itemize}
+        \item Multiplex result back to caller at crt
+        \item Track answered calls at srt
+        \item crt can be stateless
+        \item System clock is enough to generate call ID
+    \end{itemize}
+    
+    \textbf{sRPC security guarantees}
+    \begin{itemize}
+        \item Guarantee to caller that only callee can perform the work
+        \item Allow callee to verify the ID of caller
+        \item Prevent eavesdropping
+        \item Prevent tampering
+        \item Prevent replay attacks
+    \end{itemize}
+    
+    \textbf{sRPC authentication}\\
+    Kerberos, ticket = $\{\{CK, T, A\}^{KB}, X, B, CK\}^{KA}$, with:
+    \begin{itemize}
+        \item $CK$: channel key
+        \item $T$: nonce for B
+        \item $X$: nonce from A
+    \end{itemize}
+    
+    \textbf{sRPC authentication}\\
+    A calls B. B responds with an RFA. A responds with its identity and the Kerberos ticket. B responds with the workload response.
+    
 \end{minipage}
 }
 
 \fbox{
 \begin{minipage}[t][\boxheight][c]{\boxwidth}
 
-    TODO
+    
+    \textbf{Steps to build a consistent DSM}
+    \begin{itemize}
+        \item Write propagation
+        \begin{itemize}
+            \item Find out who has copies
+            \item Make sure they see the latest value
+        \end{itemize}
+        \item Read/Write atomicity
+        \begin{itemize}
+            \item Make sure operations are done one after another in some serial order
+        \end{itemize}
+    \end{itemize}
+    
+    \textbf{Coherence protocol types}
+    \begin{itemize}
+        \item Invalidation-based (writing invalidates other copies)\\
+        $\implies$ better when sharing behaviour changes (often the case)
+        \item Update-based (writing [propagates value]\\
+        $\implies$ better when sharing behaviour is constant
+    \end{itemize}
+    
+    \textbf{Directory}\\
+    Data structure where each row is a shared memory location, and has a presence bit for each processor, a status bit (read-only or read-write), as well a lock
+    
+    \textbf{Where to store a directory?}
+    \begin{itemize}
+        \item Centralized node (not scalable)
+        \item Split the directory by rows and distribute it to all the nodes
+        \item Distribute the entries and allow them to move between nodes (complex)
+    \end{itemize}
+    
+    \textbf{Write serialization}\\
+    When a write is happening at a location, no other read/write can happen concurrently at the same location
+    
+    \textbf{Write atomicity}\\
+    Write is not visible at any location until it is propagated everywhere
+    
+    \textbf{File usage characteristics}
+    \begin{itemize}
+        \item File size: most files are under 10KB (Zipf's law)\\
+        $\implies$ set transfer units accordingly
+        \item Lifetime: most files are short-lives\\
+        $\implies$ don't propagate writes immediately
+        \item Sharing: only a few files are actively shared\\
+        $\implies$ good case for client-side caching
+    \end{itemize}
+    
+    \textbf{Distributed file systems optimizations}
+    \begin{itemize}
+        \item System binaries: rarely change, widely replicate
+        \item Temp. files: short, unshared, short-lived, kept locally
+        \item Mailboxes: frequent updates, rarely cached
+    \end{itemize}
+    
+    \textbf{File caching}\\
+    Fully associative cache. Hash the fd+offset, find its position in a hash table of linked list, each entry correspond to an entry in the cache. Only lock for access to the hash table entry, not the entire hash table
+    
+    \textbf{Distributed write-back cache}\\
+    We need a flusher thread that flushes dirty blocks at regular intervals. Requires a dirty block table that points to the cache entries\\
+    We also need a harvester that evicts used blocks to maintain a certain hysteresis threshold, with an LRU policy
+    
     
 \end{minipage}
 }\fbox{

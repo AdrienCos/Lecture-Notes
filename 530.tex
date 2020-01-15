@@ -37,7 +37,7 @@
     \begin{itemize}
         \item Leakage limits how low you can go
         \item Other solution: reduce $f$ and increase nb of cores\\
-        $\implies$ needs programs to be parallelizable
+        $\Rightarrow$ needs programs to be parallelizable
     \end{itemize}
     
     \textbf{Five principles of perf.}
@@ -54,7 +54,7 @@
     Average parallelism : $P_{avg} = \frac{T_1}{T_\infty}$\\
     For a $p$ wide system:\\
     $T_p \geq \max(\frac{T_1}{p}, T_\infty)$ \\
-    $P_{avg} \gg p \implies T_p \approx \frac{T_1}{p}$
+    $P_{avg} \gg p \Rightarrow T_p \approx \frac{T_1}{p}$
 
     \textbf{Speculation}\\
     Make educated guesses to avoid expensive operations, if you can be right most of the time
@@ -75,11 +75,19 @@
     \textbf{Performace measurement}\\
     \textit{Latency}: time to perform a fixed task\\
     \textit{Throughput}: number of tasks in a fixed time\\
-    $\implies$ not most contradictory
+    $\Rightarrow$ not most contradictory
     
     \textbf{Perf. improvement}\\
-    Proc. A is $X$ times faster than . proc. B if:\\
-    TODO
+    Proc. A is $X$ times faster than proc. B if:
+    \begin{itemize}
+        \item $Lat(A) = Lat(B) / X$
+        \item $Thr(A) = Thr(B) \times X$
+    \end{itemize}
+    Proc. A is $X\%$ faster than proc. B if:
+    \begin{itemize}
+        \item $Lat(A) = Lat(B) / (1 + X/100)$
+        \item $Thr(A) = Thr(B) * (1 + X/100)$
+    \end{itemize}
     
     \textbf{Averaging perf.}\\
     Latencies can be added, but not throughputs:\\
@@ -91,13 +99,14 @@
     Harmonic (for rates): $\frac{N}{\sum_i \frac{1}{f(i)}}$\\
     Geometric (for ratio): $\sqrt[N]{\prod_i f(i)}$
     
-    \textbf{Processor perf.}\\
-    $Perf = \underbrace{\frac{instructions}{program}}_{executed\ instructions} \times \underbrace{\frac{cylces}{instruction}}_{CPI} \times \underbrace{\frac{time}{cycle}}_{clock}$ 
     
 
 \end{minipage}
 }\fbox{
 \begin{minipage}[t][\boxheight][c]{\boxwidth}
+
+    \textbf{Processor perf.}\\
+    $Perf = \underbrace{\frac{instructions}{program}}_{executed\ instructions} \times \underbrace{\frac{cycles}{instruction}}_{CPI} \times \underbrace{\frac{time}{cycle}}_{clock}$
 
     \textbf{MIPS}\\
     $MIPS= CPI \times clock \times 10^{-6}$
@@ -152,17 +161,102 @@
         \item Fixed length: simple implementation, low code density
         \item Variable length: high code density, complex fetch
     \end{itemize}
+    de
+    \textbf{Addressing mode}
+    \begin{itemize}
+        \item Memory: fundamental storage space
+        \item Registers: faster than memory, small number, directly addressed
+        \item Immediate: part of the instruction, input only
+    \end{itemize}
+    
+    \textbf{RISC vs CISC}\\
+    CISC: higher density, less inst/program, more cycles/inst and seconds/cycle when compared to RISC
+    
+    \textbf{Pipelining}\\
+    Work on multiple instructions at the same time\\
+    $\iff$ increase throughput at the expense of latency
+    
     
 
-    
+
 \end{minipage}
 }\fbox{
 \begin{minipage}[t][\boxheight][c]{\boxwidth}
 
 
-	TODO
+    \textbf{Fetch}
+    \begin{itemize}
+        \item Use PC to index memory
+        \item Increment PC
+        \item Store the instruction in the IR
+    \end{itemize}
+    
+    \textbf{Decode}
+    \begin{itemize}
+        \item Decode opcode bits
+        \item Read input operands from register file
+        \item Write state to pipeline register (opcode, register contents, offset/destination fields, PC+1)
+    \end{itemize}
+    
+    \textbf{Execute}
+    \begin{itemize}
+        \item Perform ALU operations
+        \item Write state to pipeline register (ALU results, PC+1+offset, instruction bits for opcode, destination registers)
+    \end{itemize}
+    
+    \textbf{Load/Store}
+    \begin{itemize}
+        \item Perform data cache access for memory operations
+        \item Write state to the pipeline register (ALU results, memory data address, instruction bits for opcode, destination registers)
+    \end{itemize}
+    
+    \textbf{Write back}
+    \begin{itemize}
+        \item Write back result to register file (if needed)
+        \item 
+    \end{itemize}
+    
+    \textbf{Pipeline cycle time}\\
+    $T_{cyc}  = \dfrac{sum(T_{cyc, i})_i}{max(T_{cyc, i})_i}$
 
-
+    \textbf{Dependencies}
+    \begin{itemize}
+        \item RAW (true dependency)
+        \item WAR (anti-dependency)
+        \item WAW (output dependency)
+    \end{itemize}
+    
+    \textbf{Hazards terminology}
+    \begin{itemize}
+        \item Pipeline hazards: potential violation of program dependencies
+        \item Hazard resolution: static or dynamic
+        \item Pipeline interlock: hardware mechanism for dynamic hazard resolution
+    \end{itemize}
+    
+    \textbf{Data hazard avoidance}
+    \begin{itemize}
+        \item Avoidance (static, use \texttt{noop})
+        \item Detect and stall (stall until later inst. finishes)
+        \item Detect and forward (get correct value from somewhere in the pipeline)
+    \end{itemize}
+    
+    \textbf{Avoidance issue}
+    \begin{itemize}
+        \item Different hardware may require different \texttt{noop} arrangement
+        \item Longer code (more cache footprint, longer binary load time, terrible in machine that have more than 1 inst./sec)
+    \end{itemize}
+    
+    \textbf{Detect and stall}
+    \begin{itemize}
+        \item Detect: compare regA and regB with DestReg of previous inst.
+        \item Stall: pass \texttt{noop} to Execute
+    \end{itemize}
+    
+    \textbf{Detect and Forward}
+    \begin{itemize}
+        \item Detect: as before
+        \item Forward: propagate the instruction and flag it, use the flag to select a datapath that send the previous output of the ALU back in its input
+    \end{itemize}
 
 \end{minipage}
 }
@@ -170,13 +264,112 @@
 \fbox{
 \begin{minipage}[t][\boxheight][c]{\boxwidth}
 
-    TODO
+    \textbf{Control hazard avoidance}
+    \begin{itemize}
+        \item Avoidance (convert branches to predication)
+        \item Detect and stall (stop fetching until branch resolution)
+        \item Speculate and squash (keep going beyond branch, discard if wrong)
+    \end{itemize}
+    
+    \textbf{Branch delay slot}\\
+    Instruction executed between a branch and a target instructions, in order to not waste a squashed cycle in the event of a wrong prediction. This instruction should be one that will always be executed, no matter the result of the branch.
+    
+    \textbf{Branch prediction possibilities}
+    \begin{itemize}
+        \item Biased for not taken
+        \item Software prediction (extra bit in the instruction)
+        \item Branch offset (static, look at offset: positive = not taken, negative = taken)
+        \item Branch history (dynamic, done in HW)
+    \end{itemize}
+    
+    \textbf{Dynamic branch prediction}
+    \begin{enumerate}
+        \item Target predictor (for control branches, easy)
+        \item Direction predictor (for conditional branches, hard)
+    \end{enumerate}
+    
+    \textbf{Branch target buffer (BTB)}\\
+    Small cache (address = PC, data = target), if hit then known branch, if miss then not branch or unknown branch. Partial address/data, false positives will be detected later in the pipeline.\\
+    $\Rightarrow$ direct targets work well, indirect is more mixed (OK for indirect calls)
+    
+    \textbf{Return address stack (RAS)}\\
+    Stack on which all return addresses are stored, and can be used as a BTB alternative for indirect returns
+    
+    \textbf{TODO: take notes on missed lecture (Sept 19)}
+    
+    \textbf{Branch prediction acronyms}\\
+    \textit{BHT}: Branch History Table\\
+    \textit{PHT}: Pattern History Table
+    
+    \textbf{GShare predictor}\\
+    Two-level branch predictor, where the global BHT is XOR'd with the branch PC to access the PHT
+    
+    \textbf{Hybrid predictor}\\
+    Implements multiple branch predictors, and predicts which one to chose with a meta-predictor
+    
+    \textbf{Basic Cache}\\
+    On memory read:
+    \begin{itemize}
+        \item Hit: return data
+        \item Miss: choose and displace used block, fetch from lower memory, store and return data
+    \end{itemize}
+    
+    \textbf{Cache terminology}
+    \begin{itemize}
+        \item Frame: location in the cache
+        \item Block/cache line: minimum data unit
+        \item Hit: block found
+        \item Miss: item not found
+        \item Miss ratio: fraction of calls that miss
+        \item Hit time: time to access the cache
+        \item Miss penalty: time to replace block and return it to upper level
+    \end{itemize}
     
 \end{minipage}
 }\fbox{
 \begin{minipage}[t][\boxheight][c]{\boxwidth}
 
-    TODO
+    \textbf{TODO: catch up with caching lecture}
+    
+    \textbf{Write policies}
+    \begin{itemize}
+        \item On hit, update memory?
+        \begin{itemize}
+            \item Yes: write-through
+            \item No: write-back
+        \end{itemize}
+        \item On miss, allocate a cache block frame?
+        \begin{itemize}
+            \item Yes: write-allocate
+            \item No: no-write-allocate
+        \end{itemize}
+    \end{itemize}
+    
+    \textbf{Write buffer}\\
+    When writing, store in a buffer (between CPU and L1), and only stall when the buffer is full. A problem can appear in the case of data dependency.
+    
+    \textbf{Writeback buffer}\\
+    Like a write cache, but between other cache levels (L1-L2 for instance)
+    
+    \textbf{Miss classification}
+    \begin{itemize}
+        \item Compulsory (cold miss)
+        \item Capacity (not enough space)
+        \item Conflict (restrictive mapping strat.)
+        \item Coherence (multiprocessor causing miss)
+    \end{itemize}
+    
+    \textbf{Victim cache}\\
+    Fully associative cache placed on the refill path of a directly mapped cache, made to receive evicted lines.
+    
+    \textbf{Reducing miss cost}
+    \begin{itemize}
+        \item Refill the cache with the critical word first, and restart cache reading before the refill is complete 
+        \item Split the cache blocks into sub-blocks, with a separate valid bit per sub-block. Only bring required sub-blocks into the cache
+    \end{itemize}
+    
+    \textbf{Multi-level cache access time}\\
+    $t_{avg} = t_{hit} + p_{miss} \times t_{miss} $ 
     
 \end{minipage}
 }\fbox{
