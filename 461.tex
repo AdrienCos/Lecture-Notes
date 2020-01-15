@@ -47,6 +47,55 @@
     \end{itemize}
     $\Rightarrow$ a PL can mix paradigms
 
+    \textbf{PL Implementations}
+    \begin{itemize}
+           \item Interpreted language
+           \item Compiled language     
+    \end{itemize}
+
+    \textbf{Compiler structure}
+    \begin{itemize}
+        \item Lexical analyser: split chars into lexical elements
+        \item Syntax analyser: build an abstract-syntax tree from the lexical elements
+        \item Semantic analyser: check correctness of AST
+        \item Intermediate code generation
+        \item Code optimization
+        \item Code generation
+    \end{itemize}
+
+    \textbf{JIT compilation}\\
+    Compile the most often used functions on the fly into machine code
+
+    \textbf{Grammar}\\
+    Formal way of specifying the syntax of a language.\\
+    $\Rightarrow$ Context-Free Grammar (BNF)
+
+    \textbf{BNF concepts for a simple arithmetic language}
+    \begin{itemize}
+        \item Nonterminals: grammatical categories
+        \begin{itemize}
+            \item <e>: expression
+            \item <n>: number
+            \item <d>: digit
+        \end{itemize}
+        \item Terminals: alphabet of the language (0, 1, \dots, 9, -, +)
+        \item Production rules:
+        \begin{itemize}
+            \item <e> $\rightarrow$ (<n> || <e> + <e>  || <e> - <e>)
+            \item <n> $\rightarrow$ (<d> || <n><d>)
+            \item <d> $\rightarrow$ (0 || 1 || \dots || 9)
+        \end{itemize}
+        \item Start symbol: <e>
+        \item Derivation: 
+        \begin{enumerate}
+            \item Start with the start symbol
+            \item At each step, replace a non-terminal with the rhs (right-hand-side) of a rule
+            \item Repeat until getting a string of terminals
+            
+        \end{enumerate}
+    \end{itemize}
+
+
 \end{minipage}
 }\fbox{
 \begin{minipage}[t][\boxheight][c]{\boxwidth}
